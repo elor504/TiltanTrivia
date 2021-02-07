@@ -19,7 +19,9 @@ public class JsonParser
 
     public void GetPlayerLibraryJson(string Json)
     {
-        //object JsonTest = JsonUtility.FromJson(Json, Json.GetType());
+        PlayerLibrary playerLibrary = JsonUtility.FromJson<PlayerLibrary>(Json);
+        
+
     }
 
 
