@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class JsonParser 
+public class JsonParser
 {
+
     private class PlayerLibrary
     {
-        int game_count;
+        public int game_count;
         private class Game
         {
             int appid;
@@ -20,8 +21,8 @@ public class JsonParser
     public void GetPlayerLibraryJson(string Json)
     {
         PlayerLibrary playerLibrary = JsonUtility.FromJson<PlayerLibrary>(Json);
-        
 
+        Debug.Log(playerLibrary.game_count.ToString());
     }
 
 

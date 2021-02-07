@@ -45,8 +45,9 @@ public class AppManager : MonoBehaviour
             string jsonDAta = Encoding.UTF8.GetString(webReq.downloadHandler.data);
             Debug.Log(jsonDAta);
             // send json from here
+            
 
-        
+
         }
     }
 
