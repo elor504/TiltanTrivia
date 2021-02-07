@@ -42,12 +42,12 @@ public class AppManager : MonoBehaviour
         else
         {
 
-            string jsonDAta = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-            Debug.Log(jsonDAta);
+            string jsonData = Encoding.UTF8.GetString(webReq.downloadHandler.data);
+            //Debug.Log(jsonData);
             // send json from here
-            
-
-
+            JsonParser.GetInstance.GetPlayerLibraryJson(jsonData);
+           
+            JsonParser.GetInstance.GetPlayerID(jsonData);
         }
     }
 
