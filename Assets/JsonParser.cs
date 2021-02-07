@@ -54,7 +54,7 @@ public class JsonParser
         [Serializable]
         public class SteamID
         {
-            public int steamid;
+            public long steamid;
             public bool success;
         }
 
@@ -63,21 +63,34 @@ public class JsonParser
 
 
 
-    public void GetPlayerLibraryJson(string Json)
+    public bool TryGetPlayerLibraryJson(string Json)
     {
+        if (Json.Length < 1 || Json == "")
+            return false;
         PlayerLibraryResponse playerLibrary = new PlayerLibraryResponse();
         JsonUtility.FromJsonOverwrite(Json, playerLibrary);
+        //if (playerLibrary.response.game_count == 0 && playerLibrary.response.games.Length ==0)
+        //{
 
+        //}
         Debug.Log(playerLibrary.response.game_count.ToString() + " ID: " + playerLibrary.response.games[0].appid + " Time: " + playerLibrary.response.games[0].playtime_forever);
+        return true;
     }
 
-    public int GetPlayerID(string Json)
+    public bool TryGetPlayerID(string Json, out long playerID)
     {
-        PlayerIDResponse playerId = new PlayerIDResponse();
-        JsonUtility.FromJsonOverwrite(Json, playerId);
+        playerID = 0;
+        if (Json.Length <1|| Json == "") 
+            return false;
+        
+        PlayerIDResponse response = new PlayerIDResponse();
+        JsonUtility.FromJsonOverwrite(Json, response);
+     
+        playerID = response.response.steamid;
+        Debug.Log(response.response.steamid);
+        //   return playerId.response.steamid;
 
-        Debug.Log(playerId.response.steamid);
-        return playerId.response.steamid;
+        return response.response.success;
     }
 
 }
