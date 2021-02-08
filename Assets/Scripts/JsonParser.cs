@@ -20,27 +20,11 @@ public class JsonParser
     private class PlayerLibraryResponse
     {
         public PlayerLibrary response;
-
-
-        [System.Serializable]
-        public class PlayerLibrary
-        {
-            public int game_count;
-            public Game[] games;
-
-            [System.Serializable]
-            public class Game
-            {
-                public int appid;
-                public int playtime_forever;
-                int playtime_windows_forever;
-                int playtime_mac_forever;
-                int playtime_linux_forever;
-            }
-        }
-
-
     }
+
+
+
+
     private JsonParser()
     {
 
@@ -63,29 +47,29 @@ public class JsonParser
 
 
 
-    public bool TryGetPlayerLibraryJson(string Json)
+    public bool TryGetPlayerLibraryJson(string Json, out PlayerLibrary playerLibrary)
     {
+        playerLibrary = null;
         if (Json.Length < 1 || Json == "")
             return false;
-        PlayerLibraryResponse playerLibrary = new PlayerLibraryResponse();
-        JsonUtility.FromJsonOverwrite(Json, playerLibrary);
-        //if (playerLibrary.response.game_count == 0 && playerLibrary.response.games.Length ==0)
-        //{
 
-        //}
-        Debug.Log(playerLibrary.response.game_count.ToString() + " ID: " + playerLibrary.response.games[0].appid + " Time: " + playerLibrary.response.games[0].playtime_forever);
+        PlayerLibraryResponse response = new PlayerLibraryResponse();
+        JsonUtility.FromJsonOverwrite(Json, response);
+
+        playerLibrary = response.response;
+        Debug.Log(playerLibrary.game_count.ToString() + " ID: " + playerLibrary.games[0].appid + " Time: " + playerLibrary.games[0].playtime_forever);
         return true;
     }
 
     public bool TryGetPlayerID(string Json, out long playerID)
     {
         playerID = 0;
-        if (Json.Length <1|| Json == "") 
+        if (Json.Length < 1 || Json == "")
             return false;
-        
+
         PlayerIDResponse response = new PlayerIDResponse();
         JsonUtility.FromJsonOverwrite(Json, response);
-     
+
         playerID = response.response.steamid;
         Debug.Log(response.response.steamid);
         //   return playerId.response.steamid;
@@ -95,3 +79,25 @@ public class JsonParser
 
 }
 
+
+[System.Serializable]
+public class PlayerLibrary
+{
+    public int game_count;
+    public Game[] games;
+
+    [System.Serializable]
+    public class Game
+    {
+        public int appid;
+        public string name;
+        public int playtime_forever;
+        public string img_icon_url;
+        public string img_logo_url;
+
+        bool has_community_visible_stats;
+        int playtime_windows_forever;
+        int playtime_mac_forever;
+        int playtime_linux_forever;
+    }
+}
