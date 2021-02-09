@@ -1,41 +1,41 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-
+    [SerializeField]
+    TMP_InputField inputField;
+    [SerializeField]
+    Toggle toggle;
     [SerializeField]
     private GameObject logoImagePrefab;
     [SerializeField]
     private Transform Content;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    GameObject[] logos;
+    private void Start() {
+        AppManager._instance.LoadingData += SetInputState;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void SetInputState(bool state) {
+        inputField.interactable = !state;
+        toggle.interactable = !state;
     }
 
-    public void GetLogoArray(Sprite[] LogoArr)
-    {
-        for (int i = 0; i < LogoArr.Length; i++)
-        {
-            AddGame(LogoArr[i]);
-        }
+    public void GetImageArray(Sprite[] logoArr) {
+        if (logos != null && logos.Length > 0)
+            foreach (GameObject logo in logos)
+                Destroy(logo);
+        logos = new GameObject[logoArr.Length];
+        for (int i = 0; i < logoArr.Length; i++)
+            logos[i] = AddGame(logoArr[i]);
     }
-    public void AddGame(Sprite GameLogo)
-    {
-        //logoImage.sprite = GameLogo;
-        GameObject ImageLogo = Instantiate(logoImagePrefab, Content);
-        ImageLogo.GetComponent<Image>().sprite = GameLogo;
+    public GameObject AddGame(Sprite GameLogo) {
+        GameObject imageLogo = Instantiate(logoImagePrefab, Content);
+        imageLogo.GetComponent<Image>().sprite = GameLogo;
         Debug.Log("Added Game Logo");
+        return imageLogo;
     }
 
 
