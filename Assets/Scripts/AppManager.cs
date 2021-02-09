@@ -23,6 +23,7 @@ public class AppManager : MonoBehaviour
     [SerializeField]
     private int numOfGames;
 
+
     public event Action<bool> LoadingData;
     string loadedUserName;
     PlayerLibrary loadedPlayerLibrary;
@@ -45,7 +46,7 @@ public class AppManager : MonoBehaviour
     public void SetImageState(bool loadLogos) {
         this.loadLogos = loadLogos;
         if ((loadLogos ? logos : icons) != null && (loadLogos ? logos : icons).Length > 0)
-            uiManager.GetImageArray((loadLogos ? logos : icons));
+            uiManager.SetImageArray((loadLogos ? logos : icons), loadLogos);
         else
             StartCoroutine(LoadAppsImages());
     }
@@ -58,20 +59,18 @@ public class AppManager : MonoBehaviour
         for (int i = 0; i < numOfGames; i++) {
 
             string appId = loadedPlayerLibrary.games[i].appid.ToString();
-            string imageID = ( loadLogos ? loadedPlayerLibrary.games[i].img_logo_url : loadedPlayerLibrary.games[i].img_icon_url);
+            string imageID = (loadLogos ? loadedPlayerLibrary.games[i].img_logo_url : loadedPlayerLibrary.games[i].img_icon_url);
 
 
 
-            yield return StartCoroutine(GetTexture( GetGameImage_Url(appId, imageID)));
+            yield return StartCoroutine(GetTexture(GetGameImage_Url(appId, imageID)));
             images[i] = gameSprite;
         }
-        if (loadLogos) {
+        if (loadLogos)
             logos = images;
-        }
-        else {
+        else
             icons = images;
-        }
-        uiManager.GetImageArray(images);
+        uiManager.SetImageArray(images, loadLogos);
         LoadingData(false);
     }
     IEnumerator GetPlayerLibrary(string key, string userName, Action callback = null) {
@@ -90,9 +89,8 @@ public class AppManager : MonoBehaviour
                 loadedPlayerLibrary = playerLibrary;
                 callback?.Invoke();
             }
-            else {
+            else
                 Debug.Log("Error");
-            }
 
         }
     }

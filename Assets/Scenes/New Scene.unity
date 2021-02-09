@@ -484,7 +484,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   key: F799A742D77E4E760DDABF6DA251243D
-  numOfGames: 21
+  numOfGames: 30
 --- !u!4 &378202656
 Transform:
   m_ObjectHideFlags: 0
@@ -511,11 +511,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62fffde785182fb40a32963b18aa86c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  logosCellSize: {x: 338, y: 138}
+  iconsCellSize: {x: 69, y: 69}
   inputField: {fileID: 245950102}
   toggle: {fileID: 13834685}
   logoImagePrefab: {fileID: 1592643636216772614, guid: 4e0a163b9a36c294f9375e0f5800be4d,
     type: 3}
-  Content: {fileID: 1199566358}
+  content: {fileID: 1199566358}
 --- !u!1 &408962931
 GameObject:
   m_ObjectHideFlags: 0

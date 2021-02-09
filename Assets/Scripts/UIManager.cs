@@ -5,17 +5,24 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     [SerializeField]
+    Vector2 logosCellSize;
+    [SerializeField]
+    Vector2 iconsCellSize;
+
+    [SerializeField]
     TMP_InputField inputField;
     [SerializeField]
     Toggle toggle;
     [SerializeField]
     private GameObject logoImagePrefab;
     [SerializeField]
-    private Transform Content;
+    private Transform content;
+    private GridLayoutGroup contentGrid;
 
-    GameObject[] logos;
+    GameObject[] images;
     private void Start() {
         AppManager._instance.LoadingData += SetInputState;
+        contentGrid = content.GetComponent<GridLayoutGroup>();
     }
 
     private void SetInputState(bool state) {
@@ -23,16 +30,17 @@ public class UIManager : MonoBehaviour
         toggle.interactable = !state;
     }
 
-    public void GetImageArray(Sprite[] logoArr) {
-        if (logos != null && logos.Length > 0)
-            foreach (GameObject logo in logos)
+    public void SetImageArray(Sprite[] imageArr, bool isLogos) {
+        contentGrid.cellSize = (isLogos ? logosCellSize : iconsCellSize);
+        if (images != null && images.Length > 0)
+            foreach (GameObject logo in images)
                 Destroy(logo);
-        logos = new GameObject[logoArr.Length];
-        for (int i = 0; i < logoArr.Length; i++)
-            logos[i] = AddGame(logoArr[i]);
+        images = new GameObject[imageArr.Length];
+        for (int i = 0; i < imageArr.Length; i++)
+            images[i] = AddGame(imageArr[i]);
     }
     public GameObject AddGame(Sprite GameLogo) {
-        GameObject imageLogo = Instantiate(logoImagePrefab, Content);
+        GameObject imageLogo = Instantiate(logoImagePrefab, content);
         imageLogo.GetComponent<Image>().sprite = GameLogo;
         Debug.Log("Added Game Logo");
         return imageLogo;
