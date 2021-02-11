@@ -89,9 +89,12 @@ public class AppManager : MonoBehaviour
                 loadedPlayerLibrary = playerLibrary;
                 callback?.Invoke();
             }
-            else
-                Debug.Log("Error");
-
+            else {
+                LoadingData(false);
+            }
+        }
+        else {
+            LoadingData(false);
         }
     }
     string jsonData;
@@ -105,8 +108,8 @@ public class AppManager : MonoBehaviour
 
         yield return webReq.SendWebRequest();
 
-        if (webReq.isNetworkError) {
-            Debug.Log("Error");
+        if (webReq.isNetworkError || webReq.isHttpError) {
+            Debug.Log(webReq.error);
         }
         else {
 

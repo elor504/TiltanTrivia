@@ -42,7 +42,6 @@ public class UIManager : MonoBehaviour
     public GameObject AddGame(Sprite GameLogo) {
         GameObject imageLogo = Instantiate(logoImagePrefab, content);
         imageLogo.GetComponent<Image>().sprite = GameLogo;
-        Debug.Log("Added Game Logo");
         return imageLogo;
     }
 

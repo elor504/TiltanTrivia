@@ -2,12 +2,9 @@
 using UnityEngine;
 public class JsonParser
 {
-    public static JsonParser GetInstance
-    {
-        get
-        {
-            if (_instance == null)
-            {
+    public static JsonParser GetInstance {
+        get {
+            if (_instance == null) {
                 _instance = new JsonParser();
             }
             return _instance;
@@ -25,8 +22,7 @@ public class JsonParser
 
 
 
-    private JsonParser()
-    {
+    private JsonParser() {
 
     }
 
@@ -47,28 +43,45 @@ public class JsonParser
 
 
 
-    public bool TryGetPlayerLibraryJson(string Json, out PlayerLibrary playerLibrary)
-    {
+    public bool TryGetPlayerLibraryJson(string Json, out PlayerLibrary playerLibrary) {
         playerLibrary = null;
         if (Json.Length < 1 || Json == "")
             return false;
 
         PlayerLibraryResponse response = new PlayerLibraryResponse();
-        JsonUtility.FromJsonOverwrite(Json, response);
+        try {
+            JsonUtility.FromJsonOverwrite(Json, response);
+        }
+        catch (Exception e) {
+            Debug.LogError(e);
+            return false;
+        }
+        if (response.response.games == null ) {
+            Debug.Log("Error");
+            return false;
+        }
 
         playerLibrary = response.response;
         Debug.Log(playerLibrary.game_count.ToString() + " ID: " + playerLibrary.games[0].appid + " Time: " + playerLibrary.games[0].playtime_forever);
         return true;
     }
 
-    public bool TryGetPlayerID(string Json, out long playerID)
-    {
+    public bool TryGetPlayerID(string Json, out long playerID) {
         playerID = 0;
         if (Json.Length < 1 || Json == "")
             return false;
 
         PlayerIDResponse response = new PlayerIDResponse();
-        JsonUtility.FromJsonOverwrite(Json, response);
+        try {
+            JsonUtility.FromJsonOverwrite(Json, response);
+        }
+        catch (Exception e) {
+            Debug.LogError(e);
+            return false;
+        }
+
+
+
 
         playerID = response.response.steamid;
         Debug.Log(response.response.steamid);
