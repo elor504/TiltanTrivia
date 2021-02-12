@@ -9,8 +9,11 @@ public class TriviaUIManager : MonoBehaviour
     [SerializeField]
     TextMeshProUGUI[] answersText;
     [SerializeField]
-    Button[] AnswerButts;
-
+    Button[] answerButts;
+    [SerializeField]
+    TextMeshProUGUI timerText;
+    [SerializeField]
+    float TimerTest;
 
     private void Start()
     {
@@ -24,6 +27,14 @@ public class TriviaUIManager : MonoBehaviour
         {
             UpdateQuestion("Question Test", "This Test Is Stupid", "It Works!", "Stop it, it tickles!", "kaki");
         }
+
+        TimerTest -= Time.deltaTime;
+        if (TimerTest > 0)
+        {
+            UpdateTimerUI(TimerTest);
+        }
+       
+
     }
 
     public void UpdateQuestion(string Question, string answer1, string answer2, string answer3, string answer4)
@@ -47,17 +58,17 @@ public class TriviaUIManager : MonoBehaviour
 
     void UpdateButtonsEvent(string[] Answer)
     {
-        AnswerButts[0].onClick.AddListener(delegate { ClickOnAnswer(Answer[0]); });
-        AnswerButts[1].onClick.AddListener(delegate { ClickOnAnswer(Answer[1]); });
-        AnswerButts[2].onClick.AddListener(delegate { ClickOnAnswer(Answer[2]); });
-        AnswerButts[3].onClick.AddListener(delegate { ClickOnAnswer(Answer[3]); });
+        answerButts[0].onClick.AddListener(delegate { ClickOnAnswer(Answer[0]); });
+        answerButts[1].onClick.AddListener(delegate { ClickOnAnswer(Answer[1]); });
+        answerButts[2].onClick.AddListener(delegate { ClickOnAnswer(Answer[2]); });
+        answerButts[3].onClick.AddListener(delegate { ClickOnAnswer(Answer[3]); });
     }
 
     void RemoveButtonsEvent()
     {
-        for (int i = 0; i < AnswerButts.Length; i++)
+        for (int i = 0; i < answerButts.Length; i++)
         {
-            AnswerButts[i].onClick.RemoveAllListeners();
+            answerButts[i].onClick.RemoveAllListeners();
         }
     }
 
@@ -66,6 +77,13 @@ public class TriviaUIManager : MonoBehaviour
     {
         Debug.Log("Test On Buttons: " + Answer);
     }
+
+
+    public void UpdateTimerUI(float Time)
+    {
+        timerText.text = Mathf.CeilToInt(Time).ToString();
+    }
+
 
 
 }

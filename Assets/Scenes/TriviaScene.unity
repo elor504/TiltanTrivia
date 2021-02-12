@@ -1212,11 +1212,13 @@ MonoBehaviour:
   - {fileID: 1755432098}
   - {fileID: 351230130}
   - {fileID: 134667776}
-  AnswerButts:
+  answerButts:
   - {fileID: 2100309618}
   - {fileID: 1747948724}
   - {fileID: 26571309}
   - {fileID: 103146836}
+  timerText: {fileID: 1358619150}
+  TimerTest: 30
 --- !u!114 &978880074
 MonoBehaviour:
   m_ObjectHideFlags: 0
