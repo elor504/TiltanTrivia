@@ -4,34 +4,7 @@ using UnityEngine;
 
 public class TriviaManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        int[] array = { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
-        Shuffle(ref array);
-        //Console.WriteLine("SHUFFLE: {0}", string.Join(",", array));
-
-        string[] array2 = { "bird", "frog", "cat","Kaki" };
-        Shuffle(ref array2);
-
-
-        for (int i = 0; i < array.Length; i++)
-        {
-            Debug.Log(array[i].ToString());
-        }
-        for (int i = 0; i < array2.Length; i++)
-        {
-            Debug.Log(array2[i].ToString());
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
+  
 
     public string[] AnswerRandomizer(string Answer1,string Answer2,string Answer3,string Answer4)
     {
