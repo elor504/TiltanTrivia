@@ -21,8 +21,6 @@ public static class JsonParser
             public long steamid;
             public bool success;
         }
-
-
     }
 
 
