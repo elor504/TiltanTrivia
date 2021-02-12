@@ -1,29 +1,13 @@
 ﻿using System;
 using UnityEngine;
-public class JsonParser
+public static class JsonParser
 {
-    public static JsonParser GetInstance {
-        get {
-            if (_instance == null) {
-                _instance = new JsonParser();
-            }
-            return _instance;
-        }
-    }
-    private static JsonParser _instance;
 
 
     [Serializable]
     private class PlayerLibraryResponse
     {
         public PlayerLibrary response;
-    }
-
-
-
-
-    private JsonParser() {
-
     }
 
     [Serializable]
@@ -43,7 +27,7 @@ public class JsonParser
 
 
 
-    public bool TryGetPlayerLibraryJson(string Json, out PlayerLibrary playerLibrary) {
+    public static bool TryGetPlayerLibraryJson(string Json, out PlayerLibrary playerLibrary) {
         playerLibrary = null;
         if (Json.Length < 1 || Json == "")
             return false;
@@ -66,7 +50,7 @@ public class JsonParser
         return true;
     }
 
-    public bool TryGetPlayerID(string Json, out long playerID) {
+    public static bool TryGetPlayerID(string Json, out long playerID) {
         playerID = 0;
         if (Json.Length < 1 || Json == "")
             return false;
