@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public class AppManager : MonoBehaviour
 {
-    UIManager uiManager;
+    ApiUIManager uiManager;
 
     public static AppManager _instance;
     #region UrlLinks
@@ -33,7 +33,7 @@ public class AppManager : MonoBehaviour
 
     void Awake() {
         _instance = this;
-        uiManager = GetComponent<UIManager>();
+        uiManager = GetComponent<ApiUIManager>();
     }
     public void LoadData(string userName) {
         if (loadedUserName != userName) {
