@@ -80,14 +80,14 @@ public class AppManager : MonoBehaviour
         yield return StartCoroutine(WebFetch.ConnectToAPI(GetSteamId_Url(key, userName), SetJsonData));
 
 
-        if (JsonParser.GetInstance.TryGetPlayerID(jsonData, out long playerID)) {
+        if (JsonParser.TryGetPlayerID(jsonData, out long playerID)) {
 
 
 
             yield return StartCoroutine(WebFetch.ConnectToAPI(GetPlayerGameData_Url(key, playerID.ToString()), SetJsonData));
 
 
-            if (JsonParser.GetInstance.TryGetPlayerLibraryJson(jsonData, out PlayerLibrary playerLibrary)) {
+            if (JsonParser.TryGetPlayerLibraryJson(jsonData, out PlayerLibrary playerLibrary)) {
                 loadedPlayerLibrary = playerLibrary;
                 callback?.Invoke();
             }
