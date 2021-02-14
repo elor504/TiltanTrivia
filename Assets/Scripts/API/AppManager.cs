@@ -53,25 +53,27 @@ public class AppManager : MonoBehaviour
     }
     IEnumerator LoadAppsImages() {
         LoadingData(true);
-        Array.Sort(loadedPlayerLibrary.games, (G1, G2) => -G1.playtime_forever.CompareTo(G2.playtime_forever));
-        Debug.Log(loadedPlayerLibrary.games[0].appid);
+        if (loadedPlayerLibrary != null && loadedPlayerLibrary.games != null) {
+            Array.Sort(loadedPlayerLibrary.games, (G1, G2) => -G1.playtime_forever.CompareTo(G2.playtime_forever));
+            Debug.Log(loadedPlayerLibrary.games[0].appid);
 
-        Sprite[] images = new Sprite[numOfGames];
-        for (int i = 0; i < numOfGames; i++) {
+            Sprite[] images = new Sprite[numOfGames];
+            for (int i = 0; i < numOfGames; i++) {
 
-            string appId = loadedPlayerLibrary.games[i].appid.ToString();
-            string imageID = (loadLogos ? loadedPlayerLibrary.games[i].img_logo_url : loadedPlayerLibrary.games[i].img_icon_url);
+                string appId = loadedPlayerLibrary.games[i].appid.ToString();
+                string imageID = (loadLogos ? loadedPlayerLibrary.games[i].img_logo_url : loadedPlayerLibrary.games[i].img_icon_url);
 
 
 
-            yield return StartCoroutine(WebFetch.GetTexture(GetGameImage_Url(appId, imageID), SetSprite));
-            images[i] = gameSprite;
+                yield return StartCoroutine(WebFetch.GetTexture(GetGameImage_Url(appId, imageID), SetSprite));
+                images[i] = gameSprite;
+            }
+            if (loadLogos)
+                logos = images;
+            else
+                icons = images;
+            uiManager.SetImageArray(images, loadLogos);
         }
-        if (loadLogos)
-            logos = images;
-        else
-            icons = images;
-        uiManager.SetImageArray(images, loadLogos);
         LoadingData(false);
     }
     IEnumerator GetPlayerLibrary(string key, string userName, Action callback = null) {
@@ -80,14 +82,14 @@ public class AppManager : MonoBehaviour
         yield return StartCoroutine(WebFetch.ConnectToAPI(GetSteamId_Url(key, userName), SetJsonData));
 
 
-        if (JsonParser.TryGetPlayerID(jsonData, out long playerID)) {
+        if (JsonParser.TryParseSteamJson(jsonData, out SteamID playerID)) {
 
 
 
-            yield return StartCoroutine(WebFetch.ConnectToAPI(GetPlayerGameData_Url(key, playerID.ToString()), SetJsonData));
+            yield return StartCoroutine(WebFetch.ConnectToAPI(GetPlayerGameData_Url(key, playerID.steamid.ToString()), SetJsonData));
 
 
-            if (JsonParser.TryGetPlayerLibraryJson(jsonData, out PlayerLibrary playerLibrary)) {
+            if (JsonParser.TryParseSteamJson(jsonData, out PlayerLibrary playerLibrary)) {
                 loadedPlayerLibrary = playerLibrary;
                 callback?.Invoke();
             }
