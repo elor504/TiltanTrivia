@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.IO;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class AppManager : MonoBehaviour
 {
@@ -30,6 +27,10 @@ public class AppManager : MonoBehaviour
     bool loadLogos = true;
     Sprite[] logos;
     Sprite[] icons;
+    string jsonData;
+    Sprite gameSprite;
+    void SetJsonData(string json) => jsonData = json;
+    void SetSprite(Sprite sprite) => gameSprite = sprite;
 
     void Awake() {
         _instance = this;
@@ -52,40 +53,43 @@ public class AppManager : MonoBehaviour
     }
     IEnumerator LoadAppsImages() {
         LoadingData(true);
-        Array.Sort(loadedPlayerLibrary.games, (G1, G2) => -G1.playtime_forever.CompareTo(G2.playtime_forever));
-        Debug.Log(loadedPlayerLibrary.games[0].appid);
+        if (loadedPlayerLibrary != null && loadedPlayerLibrary.games != null) {
+            Array.Sort(loadedPlayerLibrary.games, (G1, G2) => -G1.playtime_forever.CompareTo(G2.playtime_forever));
+            Debug.Log(loadedPlayerLibrary.games[0].appid);
 
-        Sprite[] images = new Sprite[numOfGames];
-        for (int i = 0; i < numOfGames; i++) {
+            Sprite[] images = new Sprite[numOfGames];
+            for (int i = 0; i < numOfGames; i++) {
 
-            string appId = loadedPlayerLibrary.games[i].appid.ToString();
-            string imageID = (loadLogos ? loadedPlayerLibrary.games[i].img_logo_url : loadedPlayerLibrary.games[i].img_icon_url);
+                string appId = loadedPlayerLibrary.games[i].appid.ToString();
+                string imageID = (loadLogos ? loadedPlayerLibrary.games[i].img_logo_url : loadedPlayerLibrary.games[i].img_icon_url);
 
 
 
-            yield return StartCoroutine(GetTexture(GetGameImage_Url(appId, imageID)));
-            images[i] = gameSprite;
+                yield return StartCoroutine(WebFetch.GetTexture(GetGameImage_Url(appId, imageID), SetSprite));
+                images[i] = gameSprite;
+            }
+            if (loadLogos)
+                logos = images;
+            else
+                icons = images;
+            uiManager.SetImageArray(images, loadLogos);
         }
-        if (loadLogos)
-            logos = images;
-        else
-            icons = images;
-        uiManager.SetImageArray(images, loadLogos);
         LoadingData(false);
     }
     IEnumerator GetPlayerLibrary(string key, string userName, Action callback = null) {
         LoadingData(true);
-        yield return StartCoroutine(ConnectToAPI(GetSteamId_Url(key, userName)));
+
+        yield return StartCoroutine(WebFetch.ConnectToAPI(GetSteamId_Url(key, userName), SetJsonData));
 
 
-        if (JsonParser.GetInstance.TryGetPlayerID(jsonData, out long playerID)) {
+        if (JsonParser.TryParseSteamJson(jsonData, out SteamID playerID)) {
 
 
 
-            yield return StartCoroutine(ConnectToAPI(GetPlayerGameData_Url(key, playerID.ToString())));
+            yield return StartCoroutine(WebFetch.ConnectToAPI(GetPlayerGameData_Url(key, playerID.steamid.ToString()), SetJsonData));
 
 
-            if (JsonParser.GetInstance.TryGetPlayerLibraryJson(jsonData, out PlayerLibrary playerLibrary)) {
+            if (JsonParser.TryParseSteamJson(jsonData, out PlayerLibrary playerLibrary)) {
                 loadedPlayerLibrary = playerLibrary;
                 callback?.Invoke();
             }
@@ -97,62 +101,5 @@ public class AppManager : MonoBehaviour
             LoadingData(false);
         }
     }
-    string jsonData;
-    IEnumerator ConnectToAPI(string api) {
-
-        UnityWebRequest webReq = new UnityWebRequest();
-        webReq.downloadHandler = new DownloadHandlerBuffer();
-
-        // build the url and query
-        webReq.url = api;
-
-        yield return webReq.SendWebRequest();
-
-        if (webReq.isNetworkError || webReq.isHttpError) {
-            Debug.Log(webReq.error);
-        }
-        else {
-
-            jsonData = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-
-        }
-    }
-    Sprite gameSprite;
-    IEnumerator GetTexture(string uri) {
-
-        bool isValid = false;
-        try {
-            isValid = new Uri(uri).IsWellFormedOriginalString();
-            if (!isValid && Path.IsPathRooted(uri)) {
-                uri = Path.GetFullPath(uri);
-                isValid = true;
-            }
-        }
-        catch (Exception e) {
-            Debug.Log(e.Message);
-        }
-        if (isValid) {
-            UnityWebRequest request = UnityWebRequestTexture.GetTexture(uri);
-            yield return request.SendWebRequest();
-            try {
-                if (request.isNetworkError || request.isHttpError) {
-                    Debug.Log("Error getting: " + uri);
-                    Debug.Log(request.error);
-                }
-                else {
-                    Texture myTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-                    gameSprite = Sprite.Create((Texture2D)myTexture, new Rect(Vector2.zero, new Vector2(myTexture.width, myTexture.height)), Vector2.zero);
-
-                }
-
-            }
-            catch (Exception e) {
-                Debug.Log(e.Message);
-            }
-        }
-    }
-
-
-
 }
 
