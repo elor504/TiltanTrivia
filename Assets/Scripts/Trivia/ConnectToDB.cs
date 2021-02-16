@@ -34,7 +34,7 @@ public class ConnectToDB : MonoBehaviour
 
         var QuestionData = new QuestionLibrary();
 
-        QuestionData.qd.QuestionId = "20";
+      //  QuestionData.qd.QuestionId = "21";
         QuestionData.qd.Question = "TRY";
         QuestionData.qd.CorrectAnswer = "TRY";
         QuestionData.qd.Answer1 = "TRY";
@@ -65,7 +65,7 @@ public class ConnectToDB : MonoBehaviour
         [Serializable]
         public class QuestionData
         {
-            public string QuestionId;
+            //public string QuestionId;
             public string Question;
             public string CorrectAnswer;
             public string Answer1;
