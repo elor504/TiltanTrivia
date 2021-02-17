@@ -60,43 +60,6 @@ public static class WebFetch
             }
         }
     }
-    public static IEnumerator HttpGet(string uri, Action<string> callback = null) {
-        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
-        {
-
-            yield return webReq.SendWebRequest();
-
-            if (webReq.isNetworkError)
-            {
-                Debug.Log("Error");
-            }
-            else
-            {
-                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-                Debug.Log(data);
-                Debug.Log("Recieved!");
-                callback?.Invoke(data);
-            }
-
-        }
-    
-    
-    
-    
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -142,8 +105,29 @@ public static class WebFetch
 
                 callback?.Invoke("Send");
             }
+        }
+    }
+    public static IEnumerator HttpGet(string uri, Action<string> callback = null) {
+        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
+        {
+
+            yield return webReq.SendWebRequest();
+
+            if (webReq.isNetworkError)
+            {
+                Debug.Log("Error");
+            }
+            else
+            {
+                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
+                Debug.Log(data);
+                Debug.Log("Recieved!");
+                callback?.Invoke(data);
+            }
 
         }
+    
+    
     
     
     }
