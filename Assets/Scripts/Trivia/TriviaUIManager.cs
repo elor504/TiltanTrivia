@@ -1,5 +1,4 @@
-﻿using System;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,86 +6,46 @@ public class TriviaUIManager : MonoBehaviour
 {
     #region UI elements refrence
     #region Login elements
+    [Header("Login Windows")]
+    [SerializeField] GameObject signupRoomUI_GO;
+    [SerializeField] TextMeshProUGUI errorMessage;
+    [SerializeField] GameObject joinRoomUI_GO;
+    [SerializeField] GameObject createRoomUI_GO;
     #endregion
+    #region Trivia elements
+
+    [SerializeField] GameObject triviaUIGO;
+    [SerializeField] TextMeshProUGUI timerText;
     [SerializeField] TextMeshProUGUI questionText;
     [SerializeField] TextMeshProUGUI[] answersText;
-    [SerializeField] Button[] answerButts;
-    [SerializeField] TextMeshProUGUI timerText;
-    [SerializeField] float TimerTest;
-    [Header("Login Related")]
-    [SerializeField] string thisPlayerName;
-    [SerializeField] bool isRoomPrivate;
-    [SerializeField] string roomPassword;
-    [SerializeField] string joiningRoomPassword;
-    [SerializeField] int searchRoomId;
-    [SerializeField] Toggle hasPaswordToggle;
-    [SerializeField] GameObject joinRoomUIGO;
-    [SerializeField] GameObject createRoomUIGO;
-    [SerializeField] GameObject triviaUIGO;
-    [SerializeField] GameObject PasswordPanel;
     #endregion
-    #region UI variables
-    private string userName;
-    private int joinRoomID;
-    private string joinRoomPW;
-    private string createRoomPW;
     #endregion
+    public static TriviaUIManager _instance;
+    TriviaManager triviaManager;
 
     private void Start() {
-        UpdateQuestion("Question Test", "This Test Is Stupid", "It Works!", "Stop it, it tickles!", "kaki");
+        triviaManager = TriviaManager._instance;
     }
-
-    private void Update() {
-        if (Input.GetKeyDown(KeyCode.T)) {
-            UpdateQuestion("Question Test", "This Test Is Stupid", "It Works!", "Stop it, it tickles!", "kaki");
-        }
-        if (TimerTest >= 0) {
-            TimerTest -= Time.deltaTime;
-            UpdateTimerUI(TimerTest);
-        }
+    private void Awake() {
+        if (_instance == null)
+            _instance = this;
+        else if (_instance != this)
+            Destroy(gameObject);
     }
-
-    #region TriviaUI
-
-    public void OpenTriviaUI() {
-        triviaUIGO.SetActive(true);
-    }
-
-    public void CloseTriviaUI() {
-        triviaUIGO.SetActive(false);
-    }
-
-
+    #region Trivia UI
+    public void OpenTriviaUI() => triviaUIGO.SetActive(true);
+    public void CloseTriviaUI() => triviaUIGO.SetActive(false);
     public void UpdateQuestion(string Question, string answer1, string answer2, string answer3, string answer4) {
-        RemoveButtonsEvent();
-        questionText.text = Question;
-
-        string[] AnswerCache = GetComponent<TriviaManager>().AnswerRandomizer(answer1, answer2, answer3, answer4);
-
-        UpdateAnswerText(AnswerCache);
-        UpdateButtonsEvent(AnswerCache);
-
+        UpdateQuestionUIText(Question);
+        string[] AnswerCache = new string[] { answer1, answer2, answer3, answer4 };
+        UpdateAnswerUIText(AnswerCache);
     }
-
-    void UpdateAnswerText(string[] Answers) {
-        answersText[0].text = Answers[0];
-        answersText[1].text = Answers[1];
-        answersText[2].text = Answers[2];
-        answersText[3].text = Answers[3];
+    void UpdateQuestionUIText(string text) => questionText.text = text;
+    void UpdateAnswerUIText(string[] answers) {
+        for (int i = 0; i < answers.Length; i++)
+            answersText[i].text = answers[i];
     }
-
-    void UpdateButtonsEvent(string[] Answer) {
-        answerButts[0].onClick.AddListener(delegate { ClickOnAnswer(Answer[0]); });
-        answerButts[1].onClick.AddListener(delegate { ClickOnAnswer(Answer[1]); });
-        answerButts[2].onClick.AddListener(delegate { ClickOnAnswer(Answer[2]); });
-        answerButts[3].onClick.AddListener(delegate { ClickOnAnswer(Answer[3]); });
-    }
-    void RemoveButtonsEvent() {
-        for (int i = 0; i < answerButts.Length; i++) {
-            answerButts[i].onClick.RemoveAllListeners();
-        }
-    }
-    void ClickOnAnswer(string Answer) => Debug.Log("Test On Buttons: " + Answer);
+    void AnswerButton(int answerNum) { }
     public void UpdateTimerUI(float Time) {
         timerText.text = Mathf.CeilToInt(Time).ToString();
         if (Time < 5) {
@@ -95,23 +54,40 @@ public class TriviaUIManager : MonoBehaviour
     }
     #endregion
     #region Trivia login windows
-    //Main login window
-    public void SetUserName(string userName) => this.userName = userName;
+    //Signup window
+    public void SetUserName(string userName) => triviaManager.username = userName;
 
     //Create room window
-    public void SetCreateRoomPW(string PW) => createRoomPW = PW;
-    public void OpenCreateRoomUI() => createRoomUIGO.SetActive(true);
-    public void CloseCreateRoomUI() => createRoomUIGO.SetActive(false);
+    public void OpenCreateRoomUI() => createRoomUI_GO.SetActive(true);
+    public void CloseCreateRoomUI() {
+        createRoomUI_GO.SetActive(false);
+        HideErrorMessage();
+    }
     public void ConfirmRoomCreation() { }
 
     //Join room window
-    public void OpenJoinRoomUI() => joinRoomUIGO.SetActive(true);
-    public void CloseJoinRoomUI() => joinRoomUIGO.SetActive(false);
-    public void SetJoinRoomID(int ID) => joinRoomID = ID;
-    public void SetJoinRoomPW(string PW) => joinRoomPW = PW;
+    public void OpenJoinRoomUI() => joinRoomUI_GO.SetActive(true);
+    public void CloseJoinRoomUI() {
+        joinRoomUI_GO.SetActive(false);
+        HideErrorMessage();
+    }
     public void ConfirmJoinRoom() { }
-
+    //General
+    public void SetRoomID(string ID) => ParseString(ID, ref triviaManager.gameroomID, "Password's not a int");
+    public void SetRoomPW(string PW) => triviaManager.roomPassword = PW;
     //Find room
     public void FindRoomButton() => Debug.Log("Searching for random game");
+
+    private void SetErrorMessage(string errorText) {
+        errorMessage.gameObject.SetActive(true);
+        errorMessage.text = errorText;
+    }
+    private void HideErrorMessage() => errorMessage.gameObject.SetActive(false);
     #endregion
+    private void ParseString(string inputString, ref int outputInt, string errorMessage = "") {
+        if (int.TryParse(inputString, out int parsedInt))
+            outputInt = parsedInt;
+        else if (errorMessage != "")
+            SetErrorMessage(errorMessage);
+    }
 }
