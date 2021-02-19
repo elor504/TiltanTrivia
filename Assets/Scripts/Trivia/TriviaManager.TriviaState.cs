@@ -1,11 +1,23 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 public partial class TriviaManager
 {
     class TriviaState : GameState
     {
+        public static TriviaState triviaState;
+        StateAtTrivia stateAtLogin;
+        public StateAtTrivia GetSetStateAtTrivia
+        {
+            get => stateAtLogin;
+            set
+            {
+                if (stateAtLogin != null)
+                    stateAtLogin.OnExit();
+                stateAtLogin = value;
+                stateAtLogin.OnEnter();
+            }
+        }
         Question currentQuestion;
         Question GetSetCurrentQuestion {
             get => currentQuestion;
@@ -14,10 +26,12 @@ public partial class TriviaManager
             }
         }
         public override void OnEnter() {
+            //GetSetStateAtTrivia = 
+            triviaState = this;
             _instance.StartCoroutine(StartPlayer2UpdateCoroutine());
             LoadQuestion();
+            _instance.SetLoadingEvent += SetInputState;
         }
-
         private void LoadQuestion() {
             currentQuestion = new Question() {
                 question = "How nice is my coding?",
@@ -33,11 +47,8 @@ public partial class TriviaManager
             answers[3] = new Answer(4, currentQuestion.Answer4);
             HelperFunc.ArrayShuffle(ref answers);
         }
-
         public override void OnExit() { 
-
         }
-
         public override void SetErrorMessage(string value) {
         }
 
@@ -62,12 +73,26 @@ public partial class TriviaManager
         {
             int answerNum;
             string answer;
-
             public Answer(int answerNum, string answer) {
                 this.answerNum = answerNum;
                 this.answer = answer;
             }
-        } 
+        }
+        public abstract class StateAtTrivia : State { }
+        private class WaitingRoomState : StateAtTrivia
+        {
+            public override void OnEnter()
+            {
+                //uiManager.triviaElements.
+            }
+            public override void OnExit()
+            {
+                throw new NotImplementedException();
+            }
+            public override void SetInputState(bool state)
+            {
+                throw new NotImplementedException();
+            }
+        }
     }
-
 }

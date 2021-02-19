@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-public partial class TriviaManager
+﻿public partial class TriviaManager
 {
 
     class LoginState : GameState
@@ -17,6 +16,8 @@ public partial class TriviaManager
                 stateAtLogin.OnEnter();
             }
         }
+
+
         public override void OnEnter()
         {
             loginState = this;
@@ -108,7 +109,10 @@ public partial class TriviaManager
                 {
                     _instance.GetSetUsername = username;
                     if (int.TryParse(json, out int playerID))
+                    {
                         _instance.playerID = playerID;
+                        ExitToMainWindow();
+                    }
                     else
                     {
                         SetErrorMessage("Player ID parse error.");
@@ -201,10 +205,10 @@ public partial class TriviaManager
             public override void SetInputState(bool value) => uiManager.joinRoomWindow.SetInputState(value);
             private void JoinRoom()
             {
-                if(password != null && roomID != 0)
+                if (password != null && roomID != 0)
                 {
                     SetLoadingEvent(true);
-                    _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.JoinRooomURI(_instance.playerID,roomID, password), JoinRoomResponse));
+                    _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.JoinRooomURI(_instance.playerID, roomID, password), JoinRoomResponse));
                 }
                 else
                     SetErrorMessage("Password or/and room ID not valid.");
