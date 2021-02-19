@@ -267,7 +267,7 @@ GameObject:
   - component: {fileID: 26571310}
   - component: {fileID: 26571309}
   m_Layer: 5
-  m_Name: Butt3
+  m_Name: Butt4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -286,7 +286,7 @@ RectTransform:
   m_Children:
   - {fileID: 351230128}
   m_Father: {fileID: 2083959210}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -457,7 +457,7 @@ GameObject:
   m_Component:
   - component: {fileID: 84735668}
   m_Layer: 5
-  m_Name: JoinRoom
+  m_Name: JoinRoomWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -496,7 +496,7 @@ GameObject:
   - component: {fileID: 87124814}
   - component: {fileID: 87124813}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Player1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -763,7 +763,7 @@ GameObject:
   - component: {fileID: 103146837}
   - component: {fileID: 103146836}
   m_Layer: 5
-  m_Name: Butt4
+  m_Name: Butt3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -782,7 +782,7 @@ RectTransform:
   m_Children:
   - {fileID: 134667778}
   m_Father: {fileID: 2083959210}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1112,7 +1112,7 @@ RectTransform:
   - {fileID: 1183039851}
   - {fileID: 84735668}
   - {fileID: 1001572463}
-  m_Father: {fileID: 1172227315}
+  m_Father: {fileID: 1887138536}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1521,11 +1521,11 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 367238313}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1172227315}
+  m_Father: {fileID: 1887138536}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -2503,11 +2503,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 978880077}
+  - component: {fileID: 978880073}
   - component: {fileID: 978880076}
   - component: {fileID: 978880075}
   - component: {fileID: 978880074}
   - component: {fileID: 978880078}
-  - component: {fileID: 978880073}
   m_Layer: 5
   m_Name: UIManager
   m_TagString: Untagged
@@ -2527,11 +2527,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3f2031d2ef603aa45b4f1c8155e8e40e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  signupRoomUI_GO: {fileID: 0}
+  mainLoginWindow:
+    mainGameobject: {fileID: 1887138535}
+    findMatchButton: {fileID: 1893923550}
+    createRoomButton: {fileID: 2117941492}
+    joinRoomButton: {fileID: 1543519942}
+  signupWindow:
+    mainGameobject: {fileID: 1001572462}
+    usernameInput: {fileID: 1645205053}
+  createRoomWindow:
+    mainGameobject: {fileID: 1183039850}
+    passwordInput: {fileID: 1695625145}
+    confirmButton: {fileID: 1349781132}
+    exitButton: {fileID: 1445601161}
+  joinRoomWindow:
+    mainGameobject: {fileID: 84735667}
+    idInput: {fileID: 1779295741}
+    pwInput: {fileID: 1022038186}
+    confirmButton: {fileID: 1684119905}
+    exitButton: {fileID: 1318308409}
   errorMessage: {fileID: 1237592020}
-  joinRoomUI_GO: {fileID: 0}
-  createRoomUI_GO: {fileID: 0}
-  triviaUIGO: {fileID: 0}
+  triviaUI_GO: {fileID: 0}
   timerText: {fileID: 1358619150}
   questionText: {fileID: 683363871}
   answersText:
@@ -2784,7 +2800,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1001572463
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2938,7 +2954,7 @@ GameObject:
   - component: {fileID: 1022038187}
   - component: {fileID: 1022038186}
   m_Layer: 5
-  m_Name: PasswordID
+  m_Name: Password
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3011,8 +3027,8 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
@@ -3284,43 +3300,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1157787115}
   m_CullTransparentMesh: 0
---- !u!1 &1172227314
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1172227315}
-  m_Layer: 5
-  m_Name: MainWindow
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1172227315
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1172227314}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 367238314}
-  - {fileID: 258738205}
-  m_Father: {fileID: 1887138536}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1181225873
 GameObject:
   m_ObjectHideFlags: 0
@@ -3333,7 +3312,7 @@ GameObject:
   - component: {fileID: 1181225876}
   - component: {fileID: 1181225875}
   m_Layer: 5
-  m_Name: Text (TMP) (1)
+  m_Name: Player2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3538,7 +3517,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1183039851}
   m_Layer: 5
-  m_Name: CreateRoom
+  m_Name: CreateRoomWindow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3669,7 +3648,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1887138536}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -3785,7 +3764,7 @@ GameObject:
   - component: {fileID: 1318308410}
   - component: {fileID: 1318308409}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3990,7 +3969,7 @@ GameObject:
   - component: {fileID: 1349781133}
   - component: {fileID: 1349781132}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ConfirmButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4058,18 +4037,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1349781133}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 978880073}
-        m_MethodName: ConfirmRoomCreation
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1349781133
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4821,7 +4789,7 @@ GameObject:
   - component: {fileID: 1445601162}
   - component: {fileID: 1445601161}
   m_Layer: 5
-  m_Name: Button (1)
+  m_Name: ExitButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4889,18 +4857,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1445601162}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 978880073}
-        m_MethodName: CloseCreateRoomUI
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!114 &1445601162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5627,7 +5584,7 @@ GameObject:
   - component: {fileID: 1684119906}
   - component: {fileID: 1684119905}
   m_Layer: 5
-  m_Name: Button
+  m_Name: ConfirmButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5830,8 +5787,8 @@ MonoBehaviour:
   m_VerticalScrollbarEventHandler: {fileID: 0}
   m_LayoutGroup: {fileID: 0}
   m_ScrollSensitivity: 1
-  m_ContentType: 0
-  m_InputType: 0
+  m_ContentType: 7
+  m_InputType: 2
   m_AsteriskChar: 42
   m_KeyboardType: 0
   m_LineType: 0
@@ -5843,18 +5800,7 @@ MonoBehaviour:
   m_CharacterLimit: 11
   m_OnEndEdit:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 978880073}
-        m_MethodName: SetCreateRoomPW
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnSubmit:
     m_PersistentCalls:
       m_Calls: []
@@ -6749,7 +6695,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1887138536
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6761,7 +6707,8 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1172227315}
+  - {fileID: 367238314}
+  - {fileID: 258738205}
   - {fileID: 1237592019}
   m_Father: {fileID: 978880077}
   m_RootOrder: 1
@@ -6784,7 +6731,7 @@ GameObject:
   - component: {fileID: 1893923551}
   - component: {fileID: 1893923550}
   m_Layer: 5
-  m_Name: SearchRoomButt
+  m_Name: FindMatchButt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7219,8 +7166,8 @@ RectTransform:
   m_Children:
   - {fileID: 2100309617}
   - {fileID: 1747948723}
-  - {fileID: 26571308}
   - {fileID: 103146835}
+  - {fileID: 26571308}
   - {fileID: 1182945635}
   - {fileID: 1188040826}
   m_Father: {fileID: 1106104539}

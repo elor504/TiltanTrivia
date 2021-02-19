@@ -20,13 +20,6 @@ public partial class TriviaManager : MonoBehaviour
             Signup();
         }
     }
-
-    private void Signup() {
-        //Signup in the server
-        //If fail show error message
-        //If works move to login state
-    }
-
     public int playerID;
     public int gameroomID;
     public string roomPassword;
@@ -45,13 +38,16 @@ public partial class TriviaManager : MonoBehaviour
         State.uiManager = TriviaUIManager._instance;
         GetSetGameState = new LoginState();
     }
-
-    private void Update() => GetSetGameState.Update();
+    private void Signup() {
+        //Signup in the server
+        //If fail show error message
+        //If works move to login state
+        HelperFunc.NotImplementedError();
+    }
     public abstract class State
     {
         static public TriviaUIManager uiManager;
         public abstract void OnEnter();
-        public abstract void Update();
         public abstract void OnExit();
         public abstract void SetInputState(bool state);
     }
