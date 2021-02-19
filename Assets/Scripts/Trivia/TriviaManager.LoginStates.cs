@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 public partial class TriviaManager
 {
 
@@ -19,15 +20,14 @@ public partial class TriviaManager
             loginState = this;
             uiManager.SetMainLoginWindow(true);
             GetSetStateAtLogin = new SignupState();
-            _instance.setLoadingEvent += SetInputState;
+            _instance.SetLoadingEvent += SetInputState;
         }
 
         public override void OnExit() {
-            _instance.setLoadingEvent -= SetInputState;
+            _instance.SetLoadingEvent -= SetInputState;
             stateAtLogin.OnExit();
             uiManager.SetMainLoginWindow(false);
         }
-
         public override void SetErrorMessage(string value) => uiManager.SetErrorMessage(value);
 
         public override void SetInputState(bool value) => stateAtLogin.SetInputState(value);
@@ -36,6 +36,8 @@ public partial class TriviaManager
         {
             protected void SetLoginState(StateAtLogin stateAtLogin) => loginState.GetSetStateAtLogin = stateAtLogin;
             protected void ExitToMainWindow() => SetLoginState(new MainLoginWindowState());
+            protected void SetLoadingEvent(bool state) => _instance.SetLoadingEvent(state);
+            protected void SetErrorMessage(string error) => TriviaUIManager._instance.SetErrorMessage(error);
         }
         class MainLoginWindowState : StateAtLogin
         {
@@ -60,20 +62,38 @@ public partial class TriviaManager
         }
         class SignupState : StateAtLogin
         {
+            string username;
             public override void OnEnter() {
                 uiManager.OpenSignupUI();
                 uiManager.InputFieldEvent_Register(uiManager.signupWindow.GetInput, Signup);
             }
-
             public override void OnExit() {
                 uiManager.InputFieldEvent_Unregister(uiManager.signupWindow.GetInput, Signup);
                 uiManager.CloseSignupUI();
             }
             public override void SetInputState(bool value) => uiManager.signupWindow.SetInputState(value);
-            private void Signup(string value) {
-                _instance.GetSetUsername = value;
-                ExitToMainWindow();
-                HelperFunc.NotImplementedError();
+            private void Signup(string username) {
+                this.username = username;
+                SetLoadingEvent(true);
+                _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.SignupURI(username), SignUpResponse));
+            }
+            private void SignUpResponse(bool success, string json, string errorMessage)
+            {
+                if (success)
+                {
+                    _instance.GetSetUsername = username;
+                    Response response = JsonUtility.FromJson<Response>(json);
+                    _instance.playerID = response.playerID;
+                }
+                else
+                    SetErrorMessage(errorMessage);
+                Debug.Log(_instance.playerID + " , " + _instance.GetSetUsername);
+                SetLoadingEvent(false);
+            }
+            [Serializable]
+            class Response
+            {
+                public int playerID;
             }
         }
         class CreateRoomState : StateAtLogin

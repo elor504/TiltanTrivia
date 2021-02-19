@@ -8,6 +8,8 @@ using UnityEngine.Networking;
 
 public static class WebFetch
 {
+    const int timeout = 1;
+    public static string SignupURI(string username) => "https://localhost:44306/api/Player?playerName=" + username;
     public static IEnumerator ConnectToAPI(string api, Action<string> callback) {
 
         UnityWebRequest webReq = new UnityWebRequest();
@@ -60,6 +62,52 @@ public static class WebFetch
             }
         }
     }
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="uri"></param>
+    /// <param name="callback">
+    /// Call the callback action on finish with the values: (success, json, error)
+    /// </param>
+    /// <returns></returns>
+    public static IEnumerator HttpGet(string uri, Action<bool, string, string> callback = null) {
+        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
+        {
+            webReq.timeout = timeout;
+            yield return webReq.SendWebRequest();
+
+            if (webReq.isNetworkError || webReq.isHttpError)
+            {
+                Debug.Log("Error");
+                callback?.Invoke(false, "", webReq.error);
+            }
+            else
+            {
+                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
+                Debug.Log(data);
+                Debug.Log("Recieved!");
+                callback?.Invoke(true, data, "");
+            }
+
+        }
+    
+    
+    
+    
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -105,29 +153,8 @@ public static class WebFetch
 
                 callback?.Invoke("Send");
             }
-        }
-    }
-    public static IEnumerator HttpGet(string uri, Action<string> callback = null) {
-        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
-        {
-
-            yield return webReq.SendWebRequest();
-
-            if (webReq.isNetworkError)
-            {
-                Debug.Log("Error");
-            }
-            else
-            {
-                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-                Debug.Log(data);
-                Debug.Log("Recieved!");
-                callback?.Invoke(data);
-            }
 
         }
-    
-    
     
     
     }
