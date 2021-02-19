@@ -21,7 +21,7 @@ public class ApiUIManager : MonoBehaviour
 
     GameObject[] images;
     private void Start() {
-        AppManager._instance.LoadingData += SetInputState;
+        ApiManager._instance.LoadingData += SetInputState;
         contentGrid = content.GetComponent<GridLayoutGroup>();
     }
 

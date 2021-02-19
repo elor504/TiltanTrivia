@@ -1,7 +1,9 @@
 ﻿using System;
+using UnityEngine;
+
 public static class HelperFunc
 {
-    static Random _random = new Random();
+    static System.Random _random = new System.Random();
     /// Used in Shuffle(T).
     /// </summary>
     public static void ArrayShuffle<T>(ref T[] array) {
@@ -15,6 +17,6 @@ public static class HelperFunc
             array[r] = array[i];
             array[i] = t;
         }
-
     }
+    public static void NotImplementedError() => Debug.LogError("NOT IMPLEMENETED!");
 }

@@ -18,7 +18,11 @@ public class TriviaUIManager : MonoBehaviour
         public Button GetCreateRoomButton => createRoomButton;
         [SerializeField] Button joinRoomButton;
         public Button GetJoinRoomButton => joinRoomButton;
-
+        public void SetInputState(bool value) {
+            findMatchButton.interactable = value;
+            createRoomButton.interactable = value;
+            joinRoomButton.interactable = value;
+        }
     }
     [Serializable]
     public class SignupWindow
@@ -26,6 +30,9 @@ public class TriviaUIManager : MonoBehaviour
         public GameObject mainGameobject;
         [SerializeField] TMP_InputField usernameInput;
         public TMP_InputField GetInput => usernameInput;
+        public void SetInputState(bool value) {
+            usernameInput.interactable = value;
+        }
     }
     [Serializable]
     public class CreateRoomWindow
@@ -37,6 +44,11 @@ public class TriviaUIManager : MonoBehaviour
         public Button GetConfirmButton => confirmButton;
         [SerializeField] Button exitButton;
         public Button GetExitButton => exitButton;
+        public void SetInputState(bool value) {
+            passwordInput.interactable = value;
+            confirmButton.interactable = value;
+            exitButton.interactable = value;
+        }
     }
     [Serializable]
     public class JoinRoomWindow
@@ -50,6 +62,12 @@ public class TriviaUIManager : MonoBehaviour
         public Button GetConfirmButton => confirmButton;
         [SerializeField] Button exitButton;
         public Button GetExitButton => exitButton;
+        public void SetInputState(bool value) {
+            idInput.interactable = value;
+            pwInput.interactable = value;
+            confirmButton.interactable = value;
+            exitButton.interactable = value;
+        }
     }
     [Header("Login Windows")]
     public MainLoginWindow mainLoginWindow;
@@ -88,33 +106,19 @@ public class TriviaUIManager : MonoBehaviour
         signupWindow.mainGameobject.SetActive(false);
         HideErrorMessage();
     }
-    public void SetSignupInputState(bool value) => signupWindow.GetInput.interactable = value;
     //General
     public void SetMainLoginWindow(bool state) => mainLoginWindow.mainGameobject.SetActive(state);
-    public void SetRoomID(string ID) => ParseString(ID, ref triviaManager.gameroomID, "Password's not a int");
-    public void SetRoomPW(string PW) => triviaManager.roomPassword = PW;
 
     //Create room window
-    public void SetCreateRoomInputState(bool value) => createRoomWindow.GetInput.interactable = value;
     public void SetCreateRoomWindow(bool state) {
         createRoomWindow.mainGameobject.SetActive(state);
         HideErrorMessage();
     }
-    public void ConfirmRoomCreation() { }
     //Join room window
-    public void SetJoinRoomInputState(bool value) {
-        joinRoomWindow.GetIdInput.interactable = value;
-        joinRoomWindow.GetPwInput.interactable = value;
-    }
     public void SetJoinRoomWindow(bool state) {
         joinRoomWindow.mainGameobject.SetActive(state);
         HideErrorMessage();
     }
-    public void ConfirmJoinRoom() { }
-
-    //Find room
-    public void FindRoomButton() => Debug.Log("Searching for random game");
-
     public void SetErrorMessage(string errorText) {
         errorMessage.gameObject.SetActive(true);
         errorMessage.text = errorText;

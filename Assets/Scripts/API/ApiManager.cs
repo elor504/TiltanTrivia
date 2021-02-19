@@ -2,11 +2,11 @@
 using System.Collections;
 using UnityEngine;
 
-public class AppManager : MonoBehaviour
+public class ApiManager : MonoBehaviour
 {
     ApiUIManager uiManager;
 
-    public static AppManager _instance;
+    public static ApiManager _instance;
     #region UrlLinks
     const string steamID_baseURL = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=";
     const string steamLibrary_baseURL = "http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=";

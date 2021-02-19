@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-
 public partial class TriviaManager
 {
 
@@ -32,14 +31,32 @@ public partial class TriviaManager
         public override void SetErrorMessage(string value) => uiManager.SetErrorMessage(value);
 
         public override void SetInputState(bool value) => stateAtLogin.SetInputState(value);
-
-        public override void Update() {
-            stateAtLogin.Update();
-        }
         //States
         public abstract class StateAtLogin : State
         {
             protected void SetLoginState(StateAtLogin stateAtLogin) => loginState.GetSetStateAtLogin = stateAtLogin;
+            protected void ExitToMainWindow() => SetLoginState(new MainLoginWindowState());
+        }
+        class MainLoginWindowState : StateAtLogin
+        {
+            public override void OnEnter() {
+                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetFindMatchButton, MatchWithOpponent);
+                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetCreateRoomButton, CreateRoomWindow);
+                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetJoinRoomButton, JoinRoomWindow);
+            }
+            public override void OnExit() {
+                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetFindMatchButton, MatchWithOpponent);
+                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetCreateRoomButton, CreateRoomWindow);
+                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetJoinRoomButton, JoinRoomWindow);
+            }
+            private void CreateRoomWindow() => SetLoginState(new CreateRoomState());
+            private void JoinRoomWindow() => SetLoginState(new JoinRoomState());
+            public override void SetInputState(bool value) => uiManager.mainLoginWindow.SetInputState(value);
+            private void MatchWithOpponent() {
+                _instance.GetSetGameState = new TriviaState();
+                HelperFunc.NotImplementedError();
+            }
+
         }
         class SignupState : StateAtLogin
         {
@@ -52,65 +69,45 @@ public partial class TriviaManager
                 uiManager.InputFieldEvent_Unregister(uiManager.signupWindow.GetInput, Signup);
                 uiManager.CloseSignupUI();
             }
-            public override void SetInputState(bool value) => uiManager.SetSignupInputState(value);
-
-            public override void Update() { }
-            private void Signup(string value) => _instance.GetSetUsername = value;
-        }
-        class MainLoginWindowState : StateAtLogin
-        {
-            public override void OnEnter() {
-                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetFindMatchButton, MatchWithOpponent);
-                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetCreateRoomButton, () => { SetLoginState(new CreateRoomState()); });
-                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetJoinRoomButton, () => { SetLoginState(new JoinRoomState()); });
+            public override void SetInputState(bool value) => uiManager.signupWindow.SetInputState(value);
+            private void Signup(string value) {
+                _instance.GetSetUsername = value;
+                ExitToMainWindow();
+                HelperFunc.NotImplementedError();
             }
-
-            public override void OnExit() {
-                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetFindMatchButton, MatchWithOpponent);
-                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetCreateRoomButton, () => { SetLoginState(new CreateRoomState()); });
-                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetJoinRoomButton, () => { SetLoginState(new JoinRoomState()); });
-            }
-            public override void SetInputState(bool value) => uiManager.SetSignupInputState(value);
-
-            public override void Update() { }
-            private void MatchWithOpponent() { Debug.Log("Matching!"); }
-
         }
         class CreateRoomState : StateAtLogin
         {
             public override void OnEnter() {
-                uiManager.ButtonEventRegister(uiManager.createRoomWindow.GetExitButton, () => { SetLoginState(new MainLoginWindowState()); });
+                uiManager.createRoomWindow.mainGameobject.SetActive(true);
+                uiManager.ButtonEventRegister(uiManager.createRoomWindow.GetExitButton, ExitToMainWindow);
                 uiManager.ButtonEventRegister(uiManager.createRoomWindow.GetConfirmButton, CreateRoom);
             }
             public override void OnExit() {
-                uiManager.ButtonEventUnregister(uiManager.createRoomWindow.GetExitButton, () => { SetLoginState(new MainLoginWindowState()); });
+                uiManager.createRoomWindow.mainGameobject.SetActive(false);
+                uiManager.ButtonEventUnregister(uiManager.createRoomWindow.GetExitButton, ExitToMainWindow);
                 uiManager.ButtonEventUnregister(uiManager.createRoomWindow.GetConfirmButton, CreateRoom);
             }
-            public override void SetInputState(bool state) {
-                uiManager.createRoomWindow.GetConfirmButton.interactable = state;
-                uiManager.createRoomWindow.GetExitButton.interactable = state;
-                uiManager.createRoomWindow.GetInput.interactable = state;
+            public override void SetInputState(bool value) => uiManager.createRoomWindow.SetInputState(value);
+            private void CreateRoom() {
+                HelperFunc.NotImplementedError();
             }
-            public override void Update() {
-            }
-            private void CreateRoom() { }
         }
         class JoinRoomState : StateAtLogin
         {
             public override void OnEnter() {
-                throw new System.NotImplementedException();
+                uiManager.joinRoomWindow.mainGameobject.SetActive(true);
+                uiManager.ButtonEventRegister(uiManager.joinRoomWindow.GetExitButton, ExitToMainWindow);
+                uiManager.ButtonEventRegister(uiManager.joinRoomWindow.GetConfirmButton, JoinRoom);
             }
-
             public override void OnExit() {
-                throw new System.NotImplementedException();
+                uiManager.joinRoomWindow.mainGameobject.SetActive(false);
+                uiManager.ButtonEventUnregister(uiManager.joinRoomWindow.GetExitButton, ExitToMainWindow);
+                uiManager.ButtonEventUnregister(uiManager.joinRoomWindow.GetConfirmButton, JoinRoom);
             }
-
-            public override void SetInputState(bool state) {
-                throw new System.NotImplementedException();
-            }
-
-            public override void Update() {
-                throw new System.NotImplementedException();
+            public override void SetInputState(bool value) => uiManager.joinRoomWindow.SetInputState(value);
+            private void JoinRoom() {
+                HelperFunc.NotImplementedError();
             }
         }
 
