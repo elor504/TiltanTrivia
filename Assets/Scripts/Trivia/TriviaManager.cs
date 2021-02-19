@@ -52,12 +52,12 @@ public partial class TriviaManager : MonoBehaviour
         yield return StartCoroutine(WebFetch.HttpGet(WebFetch.GetRoomIdURI(playerID), (success, json, errorMessage) =>
         {
             GetRoomIdResponse(success, json, errorMessage);
-            callback();
+            callback?.Invoke();
         }));
     }
     private void GetRoomIdResponse(bool success, string json, string errorMessage)
     {
-        if (success && bool.TryParse(json, out bool jsonSuccess))
+        if (success)
         {
             if (int.TryParse(json, out int gameroomID))
                 this.gameroomID = gameroomID;
@@ -69,7 +69,7 @@ public partial class TriviaManager : MonoBehaviour
         }
         else
             GetSetGameState.SetErrorMessage(errorMessage);
-            SetLoadingEvent(false);
+        SetLoadingEvent(false);
     }
     public abstract class State
     {
