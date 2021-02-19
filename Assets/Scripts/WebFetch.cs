@@ -11,7 +11,7 @@ public static class WebFetch
     public static string SignupURI<T>(T username) => "https://localhost:44306/api/Player?playerName=" + username.ToString();
     public static string FindMatchURI<T>(T playerID) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString();
     public static string GetRoomIdURI<T>(T playerID) => "https://localhost:44306/api/GetGameRoomID?playerId=" + playerID.ToString();
-    public static string CreateRooomURI<T1,T2>(T1 playerID, T2 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "PW=" + password.ToString();
+    public static string CreateRooomURI<T1,T2>(T1 playerID, T2 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "&PW=" + password.ToString();
     public static string JoinRooomURI<T1,T2,T3>(T1 playerID, T2 roomID, T3 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "&GameRoomId=" + roomID.ToString() + "&PW=" + password.ToString();
     public static IEnumerator ConnectToAPI(string api, Action<string> callback)
     {
