@@ -44,9 +44,6 @@ public class TriviaUI_Editor : Editor
 
     // When the categoryToDisplay enum is at "Trivia"
     void DisplayTriviaElements() {
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("triviaUI_GO"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("timerText"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("questionText"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("answersText"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("triviaWindow"));
     }
 }
