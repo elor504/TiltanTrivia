@@ -70,12 +70,10 @@
             {
                 if (success)
                 {
-                    if (bool.TryParse(json, out bool jsonSuccess))
-                        _instance.UpdateGameroomID(() => { _instance.GetSetGameState = new TriviaState(); });
+                    if (int.TryParse(json, out int gameroomID))
+                        _instance.gameroomID = gameroomID;
                     else
-                    {
                         SetErrorMessage("Json success parse error.");
-                    }
                 }
                 else
                     SetErrorMessage(errorMessage);
@@ -114,9 +112,7 @@
                         ExitToMainWindow();
                     }
                     else
-                    {
                         SetErrorMessage("Player ID parse error.");
-                    }
                 }
                 else
                     SetErrorMessage(errorMessage);
