@@ -37,6 +37,7 @@ public partial class TriviaManager
             protected void SetLoginState(StateAtLogin stateAtLogin) => loginState.GetSetStateAtLogin = stateAtLogin;
             protected void ExitToMainWindow() => SetLoginState(new MainLoginWindowState());
             protected void SetLoadingEvent(bool state) => _instance.SetLoadingEvent(state);
+            protected void SetErrorMessage(string error) => TriviaUIManager._instance.SetErrorMessage(error);
         }
         class MainLoginWindowState : StateAtLogin
         {
@@ -74,9 +75,9 @@ public partial class TriviaManager
             private void Signup(string username) {
                 this.username = username;
                 SetLoadingEvent(true);
-                WebFetch.HttpGet(WebFetch.SignupURI(username), SignUpResponse);
+                _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.SignupURI(username), SignUpResponse));
             }
-            private void SignUpResponse(bool success, string json)
+            private void SignUpResponse(bool success, string json, string errorMessage)
             {
                 if (success)
                 {
@@ -84,6 +85,8 @@ public partial class TriviaManager
                     Response response = JsonUtility.FromJson<Response>(json);
                     _instance.playerID = response.playerID;
                 }
+                else
+                    SetErrorMessage(errorMessage);
                 Debug.Log(_instance.playerID + " , " + _instance.GetSetUsername);
                 SetLoadingEvent(false);
             }

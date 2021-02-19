@@ -8,6 +8,7 @@ using UnityEngine.Networking;
 
 public static class WebFetch
 {
+    const int timeout = 1;
     public static string SignupURI(string username) => "https://localhost:44306/api/Player?playerName=" + username;
     public static IEnumerator ConnectToAPI(string api, Action<string> callback) {
 
@@ -61,22 +62,31 @@ public static class WebFetch
             }
         }
     }
-    public static IEnumerator HttpGet(string uri, Action<bool, string> callback = null) {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="uri"></param>
+    /// <param name="callback">
+    /// Call the callback action on finish with the values: (success, json, error)
+    /// </param>
+    /// <returns></returns>
+    public static IEnumerator HttpGet(string uri, Action<bool, string, string> callback = null) {
         using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
+            webReq.timeout = timeout;
             yield return webReq.SendWebRequest();
 
             if (webReq.isNetworkError || webReq.isHttpError)
             {
                 Debug.Log("Error");
-                callback?.Invoke(false, "");
+                callback?.Invoke(false, "", webReq.error);
             }
             else
             {
                 string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
                 Debug.Log(data);
                 Debug.Log("Recieved!");
-                callback?.Invoke(true, data);
+                callback?.Invoke(true, data, "");
             }
 
         }
