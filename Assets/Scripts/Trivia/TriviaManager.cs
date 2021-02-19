@@ -17,13 +17,12 @@ public partial class TriviaManager : MonoBehaviour
         get => username;
         set {
             username = value;
-            Signup();
         }
     }
     public int playerID;
     public int gameroomID;
     public string roomPassword;
-    public event Action<bool> setLoadingEvent;
+    public event Action<bool> SetLoadingEvent;
     //TriviaUIManager uIManager;
 
     public static TriviaManager _instance;
@@ -37,13 +36,9 @@ public partial class TriviaManager : MonoBehaviour
         //uIManager = TriviaUIManager._instance;
         State.uiManager = TriviaUIManager._instance;
         GetSetGameState = new LoginState();
+        SetLoadingEvent += (value) => { gameState.SetInputState(!value); };
     }
-    private void Signup() {
-        //Signup in the server
-        //If fail show error message
-        //If works move to login state
-        HelperFunc.NotImplementedError();
-    }
+    public void SetLoading(bool value) => SetLoadingEvent?.Invoke(value);
     public abstract class State
     {
         static public TriviaUIManager uiManager;

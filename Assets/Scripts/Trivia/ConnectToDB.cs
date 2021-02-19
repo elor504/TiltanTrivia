@@ -14,6 +14,7 @@ public class ConnectToDB : MonoBehaviour
     //string db_server = "trivia";
 
     string connStr = "https://localhost:44306/api/Question/1";
+    public const string uriCreatePlayerByString = "https://localhost:44306/api/Player?playerName=";
 
     string jsonData;
     void SetJsonData(string json)
