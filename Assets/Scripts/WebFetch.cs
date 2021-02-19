@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
-using System.Net;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -9,8 +8,13 @@ using UnityEngine.Networking;
 public static class WebFetch
 {
     const int timeout = 1;
-    public static string SignupURI(string username) => "https://localhost:44306/api/Player?playerName=" + username;
-    public static IEnumerator ConnectToAPI(string api, Action<string> callback) {
+    public static string SignupURI<T>(T username) => "https://localhost:44306/api/Player?playerName=" + username.ToString();
+    public static string FindMatchURI<T>(T playerID) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString();
+    public static string GetRoomIdURI<T>(T playerID) => "https://localhost:44306/api/GetGameRoomID?playerId=" + playerID.ToString();
+    public static string CreateRooomURI<T1,T2>(T1 playerID, T2 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "PW=" + password.ToString();
+    public static string JoinRooomURI<T1,T2,T3>(T1 playerID, T2 roomID, T3 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "&GameRoomId=" + roomID.ToString() + "&PW=" + password.ToString();
+    public static IEnumerator ConnectToAPI(string api, Action<string> callback)
+    {
 
         UnityWebRequest webReq = new UnityWebRequest();
         webReq.downloadHandler = new DownloadHandlerBuffer();
@@ -20,44 +24,55 @@ public static class WebFetch
 
         yield return webReq.SendWebRequest();
 
-        if (webReq.isNetworkError || webReq.isHttpError) {
+        if (webReq.isNetworkError || webReq.isHttpError)
+        {
             Debug.Log(webReq.error);
         }
-        else {
+        else
+        {
 
             callback?.Invoke(Encoding.UTF8.GetString(webReq.downloadHandler.data));
 
         }
     }
-    public static IEnumerator GetTexture(string uri, Action<Sprite> callback) {
+    public static IEnumerator GetTexture(string uri, Action<Sprite> callback)
+    {
 
         bool isValid = false;
-        try {
+        try
+        {
             isValid = new Uri(uri).IsWellFormedOriginalString();
-            if (!isValid && Path.IsPathRooted(uri)) {
+            if (!isValid && Path.IsPathRooted(uri))
+            {
                 uri = Path.GetFullPath(uri);
                 isValid = true;
             }
         }
-        catch (Exception e) {
+        catch (Exception e)
+        {
             Debug.Log(e.Message);
         }
-        if (isValid) {
+        if (isValid)
+        {
             UnityWebRequest request = UnityWebRequestTexture.GetTexture(uri);
             yield return request.SendWebRequest();
-            try {
-                if (request.isNetworkError || request.isHttpError) {
+            try
+            {
+                if (request.isNetworkError || request.isHttpError)
+                {
                     Debug.Log("Error getting: " + uri);
                     Debug.Log(request.error);
                 }
-                else {
+                else
+                {
                     Texture myTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
                     callback?.Invoke(Sprite.Create((Texture2D)myTexture, new Rect(Vector2.zero, new Vector2(myTexture.width, myTexture.height)), Vector2.zero));
 
                 }
 
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 Debug.Log(e.Message);
             }
         }
@@ -70,12 +85,12 @@ public static class WebFetch
     /// Call the callback action on finish with the values: (success, json, error)
     /// </param>
     /// <returns></returns>
-    public static IEnumerator HttpGet(string uri, Action<bool, string, string> callback = null) {
+    public static IEnumerator HttpGet(string uri, Action<bool, string, string> callback = null)
+    {
         using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
             webReq.timeout = timeout;
             yield return webReq.SendWebRequest();
-
             if (webReq.isNetworkError || webReq.isHttpError)
             {
                 Debug.Log("Error");
@@ -88,13 +103,9 @@ public static class WebFetch
                 Debug.Log("Recieved!");
                 callback?.Invoke(true, data, "");
             }
-
         }
-    
-    
-    
-    
     }
+
 
 
 
@@ -132,15 +143,16 @@ public static class WebFetch
 
 
     private const string defaultContentType = "application/json";
-    public static IEnumerator HttpPost(string uri, string jsonBody, Action<string> callback = null) {
+    public static IEnumerator HttpPost(string uri, string jsonBody, Action<string> callback = null)
+    {
 
         using (UnityWebRequest webReq = UnityWebRequest.Post(uri, jsonBody))
         {
             webReq.SetRequestHeader("Content-Type", defaultContentType);
             webReq.uploadHandler.contentType = defaultContentType;
             webReq.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonBody));
-  
-          yield return webReq.SendWebRequest();
+
+            yield return webReq.SendWebRequest();
 
             if (webReq.isNetworkError)
             {
@@ -155,7 +167,7 @@ public static class WebFetch
             }
 
         }
-    
-    
+
+
     }
 }
