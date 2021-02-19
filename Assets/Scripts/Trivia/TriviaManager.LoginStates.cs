@@ -71,7 +71,10 @@
                 if (success)
                 {
                     if (int.TryParse(json, out int gameroomID))
+                    {
                         _instance.gameroomID = gameroomID;
+                        _instance.GetSetGameState = new TriviaState();
+                    }
                     else
                         SetErrorMessage("Json success parse error.");
                 }
