@@ -1,48 +1,62 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-
-public class TriviaManager : MonoBehaviour
+public partial class TriviaManager : MonoBehaviour
 {
-  
-
-    public string[] AnswerRandomizer(string Answer1,string Answer2,string Answer3,string Answer4)
-    {
-        string[] ShuffleCache = new string[4];
-        ShuffleCache[0] = Answer1;
-        ShuffleCache[1] = Answer2;
-        ShuffleCache[2] = Answer3;
-        ShuffleCache[3] = Answer4;
-        Shuffle(ref ShuffleCache);
-
-        return ShuffleCache;
-    }
-
-
-
-    /// Used in Shuffle(T).
-    /// </summary>
-    static System.Random _random = new System.Random();
-
-
-    void Shuffle<T>(ref T[] array)
-    {
-        int n = array.Length;
-        for (int i = 0; i < (n - 1); i++)
-        {
-            // Use Next on random instance with an argument.
-            // ... The argument is an exclusive bound.
-            //     So we will not go past the end of the array.
-            int r = i + _random.Next(n - i);
-            T t = array[r];
-            array[r] = array[i];
-            array[i] = t;
+    private GameState gameState;
+    public GameState GetSetGameState {
+        get => gameState;
+        set {
+            if (gameState != null)
+                gameState.OnExit();
+            gameState = value;
+            gameState.OnEnter();
         }
-       
+    }
+    public string username;
+    public string GetSetUsername {
+        get => username;
+        set {
+            username = value;
+            Signup();
+        }
     }
 
+    private void Signup() {
+        //Signup in the server
+        //If fail show error message
+        //If works move to login state
+    }
 
+    public int playerID;
+    public int gameroomID;
+    public string roomPassword;
+    public event Action<bool> setLoadingEvent;
+    //TriviaUIManager uIManager;
 
+    public static TriviaManager _instance;
+    private void Awake() {
+        if (_instance == null)
+            _instance = this;
+        else if (_instance != this)
+            Destroy(gameObject);
+    }
+    private void Start() {
+        //uIManager = TriviaUIManager._instance;
+        State.uiManager = TriviaUIManager._instance;
+        GetSetGameState = new LoginState();
+    }
 
-
+    private void Update() => GetSetGameState.Update();
+    public abstract class State
+    {
+        static public TriviaUIManager uiManager;
+        public abstract void OnEnter();
+        public abstract void Update();
+        public abstract void OnExit();
+        public abstract void SetInputState(bool state);
+    }
+    public abstract class GameState : State
+    {
+        public abstract void SetErrorMessage(string value);
+    }
 }
