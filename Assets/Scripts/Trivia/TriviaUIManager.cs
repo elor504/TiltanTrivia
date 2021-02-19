@@ -77,8 +77,8 @@ public class TriviaUIManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI errorMessage;
     public void InputFieldEvent_Register(TMP_InputField inputField, UnityAction<string> unityEvent) => inputField.onEndEdit.AddListener(unityEvent);
     public void InputFieldEvent_Unregister(TMP_InputField inputField, UnityAction<string> unityEvent) => inputField.onEndEdit.RemoveListener(unityEvent);
-    public void ButtonEventRegister(Button button, UnityAction unityEvent) => button.onClick.AddListener(unityEvent);
-    public void ButtonEventUnregister(Button button, UnityAction unityEvent) => button.onClick.RemoveListener(unityEvent);
+    public void ButtonEvent_Register(Button button, UnityAction unityEvent) => button.onClick.AddListener(unityEvent);
+    public void ButtonEvent_Unregister(Button button, UnityAction unityEvent) => button.onClick.RemoveListener(unityEvent);
     #endregion
     #region Trivia elements
     [SerializeField] GameObject triviaUI_GO;
@@ -122,6 +122,7 @@ public class TriviaUIManager : MonoBehaviour
     public void SetErrorMessage(string errorText) {
         errorMessage.gameObject.SetActive(true);
         errorMessage.text = errorText;
+        Debug.LogError(errorText);
     }
     private void HideErrorMessage() {
         errorMessage.text = "";

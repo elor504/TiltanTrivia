@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System;
 public partial class TriviaManager
 {
 
@@ -7,23 +6,27 @@ public partial class TriviaManager
     {
         public static LoginState loginState;
         StateAtLogin stateAtLogin;
-        public StateAtLogin GetSetStateAtLogin {
+        public StateAtLogin GetSetStateAtLogin
+        {
             get => stateAtLogin;
-            set {
+            set
+            {
                 if (stateAtLogin != null)
                     stateAtLogin.OnExit();
                 stateAtLogin = value;
                 stateAtLogin.OnEnter();
             }
         }
-        public override void OnEnter() {
+        public override void OnEnter()
+        {
             loginState = this;
             uiManager.SetMainLoginWindow(true);
             GetSetStateAtLogin = new SignupState();
             _instance.SetLoadingEvent += SetInputState;
         }
 
-        public override void OnExit() {
+        public override void OnExit()
+        {
             _instance.SetLoadingEvent -= SetInputState;
             stateAtLogin.OnExit();
             uiManager.SetMainLoginWindow(false);
@@ -41,38 +44,60 @@ public partial class TriviaManager
         }
         class MainLoginWindowState : StateAtLogin
         {
-            public override void OnEnter() {
-                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetFindMatchButton, MatchWithOpponent);
-                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetCreateRoomButton, CreateRoomWindow);
-                uiManager.ButtonEventRegister(uiManager.mainLoginWindow.GetJoinRoomButton, JoinRoomWindow);
+            public override void OnEnter()
+            {
+                uiManager.ButtonEvent_Register(uiManager.mainLoginWindow.GetFindMatchButton, FindMatch);
+                uiManager.ButtonEvent_Register(uiManager.mainLoginWindow.GetCreateRoomButton, CreateRoomWindow);
+                uiManager.ButtonEvent_Register(uiManager.mainLoginWindow.GetJoinRoomButton, JoinRoomWindow);
             }
-            public override void OnExit() {
-                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetFindMatchButton, MatchWithOpponent);
-                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetCreateRoomButton, CreateRoomWindow);
-                uiManager.ButtonEventUnregister(uiManager.mainLoginWindow.GetJoinRoomButton, JoinRoomWindow);
+            public override void OnExit()
+            {
+                uiManager.ButtonEvent_Unregister(uiManager.mainLoginWindow.GetFindMatchButton, FindMatch);
+                uiManager.ButtonEvent_Unregister(uiManager.mainLoginWindow.GetCreateRoomButton, CreateRoomWindow);
+                uiManager.ButtonEvent_Unregister(uiManager.mainLoginWindow.GetJoinRoomButton, JoinRoomWindow);
             }
             private void CreateRoomWindow() => SetLoginState(new CreateRoomState());
             private void JoinRoomWindow() => SetLoginState(new JoinRoomState());
             public override void SetInputState(bool value) => uiManager.mainLoginWindow.SetInputState(value);
-            private void MatchWithOpponent() {
-                _instance.GetSetGameState = new TriviaState();
-                HelperFunc.NotImplementedError();
+            private void FindMatch()
+            {
+
+                SetLoadingEvent(true);
+                _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.FindMatchURI(_instance.playerID), FindMatchResponse));
             }
+            private void FindMatchResponse(bool success, string json, string errorMessage)
+            {
+                if (success)
+                {
+                    if (bool.TryParse(json, out bool jsonSuccess))
+                        _instance.UpdateGameroomID(() => { _instance.GetSetGameState = new TriviaState(); });
+                    else
+                    {
+                        SetErrorMessage("Json success parse error.");
+                    }
+                }
+                else
+                    SetErrorMessage(errorMessage);
+            }
+
 
         }
         class SignupState : StateAtLogin
         {
             string username;
-            public override void OnEnter() {
+            public override void OnEnter()
+            {
                 uiManager.OpenSignupUI();
                 uiManager.InputFieldEvent_Register(uiManager.signupWindow.GetInput, Signup);
             }
-            public override void OnExit() {
+            public override void OnExit()
+            {
                 uiManager.InputFieldEvent_Unregister(uiManager.signupWindow.GetInput, Signup);
                 uiManager.CloseSignupUI();
             }
             public override void SetInputState(bool value) => uiManager.signupWindow.SetInputState(value);
-            private void Signup(string username) {
+            private void Signup(string username)
+            {
                 this.username = username;
                 SetLoadingEvent(true);
                 _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.SignupURI(username), SignUpResponse));
@@ -82,52 +107,130 @@ public partial class TriviaManager
                 if (success)
                 {
                     _instance.GetSetUsername = username;
-                    Response response = JsonUtility.FromJson<Response>(json);
-                    _instance.playerID = response.playerID;
+                    if (int.TryParse(json, out int playerID))
+                        _instance.playerID = playerID;
+                    else
+                    {
+                        SetErrorMessage("Player ID parse error.");
+                    }
                 }
                 else
                     SetErrorMessage(errorMessage);
-                Debug.Log(_instance.playerID + " , " + _instance.GetSetUsername);
                 SetLoadingEvent(false);
-            }
-            [Serializable]
-            class Response
-            {
-                public int playerID;
             }
         }
         class CreateRoomState : StateAtLogin
         {
-            public override void OnEnter() {
+            string password;
+            public override void OnEnter()
+            {
                 uiManager.createRoomWindow.mainGameobject.SetActive(true);
-                uiManager.ButtonEventRegister(uiManager.createRoomWindow.GetExitButton, ExitToMainWindow);
-                uiManager.ButtonEventRegister(uiManager.createRoomWindow.GetConfirmButton, CreateRoom);
+                uiManager.ButtonEvent_Register(uiManager.createRoomWindow.GetExitButton, ExitToMainWindow);
+                uiManager.ButtonEvent_Register(uiManager.createRoomWindow.GetConfirmButton, CreateRoom);
+                uiManager.InputFieldEvent_Register(uiManager.createRoomWindow.GetInput, SetPassword);
             }
-            public override void OnExit() {
+            public override void OnExit()
+            {
                 uiManager.createRoomWindow.mainGameobject.SetActive(false);
-                uiManager.ButtonEventUnregister(uiManager.createRoomWindow.GetExitButton, ExitToMainWindow);
-                uiManager.ButtonEventUnregister(uiManager.createRoomWindow.GetConfirmButton, CreateRoom);
+                uiManager.InputFieldEvent_Unregister(uiManager.createRoomWindow.GetInput, SetPassword);
+                uiManager.ButtonEvent_Unregister(uiManager.createRoomWindow.GetConfirmButton, CreateRoom);
+                uiManager.ButtonEvent_Unregister(uiManager.createRoomWindow.GetExitButton, ExitToMainWindow);
             }
+            public void SetPassword(string value) => password = value;
             public override void SetInputState(bool value) => uiManager.createRoomWindow.SetInputState(value);
-            private void CreateRoom() {
-                HelperFunc.NotImplementedError();
+            private void CreateRoom()
+            {
+                if (_instance.roomPassword != null)
+                {
+                    SetLoadingEvent(true);
+                    _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.CreateRooomURI(_instance.playerID, password), CreateRoomResponse));
+                }
+                else
+                    SetErrorMessage("Please fill the password field.");
+            }
+            private void CreateRoomResponse(bool success, string json, string errorMessage)
+            {
+                if (success)
+                {
+                    if (bool.TryParse(json, out bool jsonSuccess))
+                    {
+                        _instance.roomPassword = password;
+                        _instance.UpdateGameroomID(() => { _instance.GetSetGameState = new TriviaState(); });
+                    }
+                    else
+                    {
+                        SetErrorMessage("Json success parse error.");
+                        SetPassword(null);
+                    }
+                }
+                else
+                {
+                    SetErrorMessage(errorMessage);
+                    SetPassword(null);
+                }
             }
         }
         class JoinRoomState : StateAtLogin
         {
-            public override void OnEnter() {
+            string password;
+            int roomID;
+            public override void OnEnter()
+            {
                 uiManager.joinRoomWindow.mainGameobject.SetActive(true);
-                uiManager.ButtonEventRegister(uiManager.joinRoomWindow.GetExitButton, ExitToMainWindow);
-                uiManager.ButtonEventRegister(uiManager.joinRoomWindow.GetConfirmButton, JoinRoom);
+                uiManager.ButtonEvent_Register(uiManager.joinRoomWindow.GetExitButton, ExitToMainWindow);
+                uiManager.ButtonEvent_Register(uiManager.joinRoomWindow.GetConfirmButton, JoinRoom);
+                uiManager.InputFieldEvent_Register(uiManager.joinRoomWindow.GetPwInput, SetPassword);
+                uiManager.InputFieldEvent_Register(uiManager.joinRoomWindow.GetIdInput, SetRoomID);
             }
-            public override void OnExit() {
+            public override void OnExit()
+            {
                 uiManager.joinRoomWindow.mainGameobject.SetActive(false);
-                uiManager.ButtonEventUnregister(uiManager.joinRoomWindow.GetExitButton, ExitToMainWindow);
-                uiManager.ButtonEventUnregister(uiManager.joinRoomWindow.GetConfirmButton, JoinRoom);
+                uiManager.InputFieldEvent_Unregister(uiManager.joinRoomWindow.GetPwInput, SetPassword);
+                uiManager.InputFieldEvent_Unregister(uiManager.joinRoomWindow.GetIdInput, SetRoomID);
+                uiManager.ButtonEvent_Unregister(uiManager.joinRoomWindow.GetExitButton, ExitToMainWindow);
+                uiManager.ButtonEvent_Unregister(uiManager.joinRoomWindow.GetConfirmButton, JoinRoom);
+            }
+            public void SetPassword(string value) => password = value;
+            public void SetRoomID(string value)
+            {
+                if (int.TryParse(value, out int roomID))
+                    this.roomID = roomID;
+                else
+                    SetErrorMessage("Room ID must contain only numbers.");
             }
             public override void SetInputState(bool value) => uiManager.joinRoomWindow.SetInputState(value);
-            private void JoinRoom() {
-                HelperFunc.NotImplementedError();
+            private void JoinRoom()
+            {
+                if(password != null && roomID != 0)
+                {
+                    SetLoadingEvent(true);
+                    _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.JoinRooomURI(_instance.playerID,roomID, password), JoinRoomResponse));
+                }
+                else
+                    SetErrorMessage("Password or/and room ID not valid.");
+            }
+            private void JoinRoomResponse(bool success, string json, string errorMessage)
+            {
+                if (success)
+                {
+                    if (bool.TryParse(json, out bool jsonSuccess))
+                    {
+                        _instance.roomPassword = password;
+                        _instance.gameroomID = roomID;
+                        _instance.GetSetGameState = new TriviaState();
+                    }
+                    else
+                    {
+                        SetErrorMessage("Json success parse error.");
+                        SetPassword(null);
+                        SetRoomID("0");
+                    }
+                }
+                else
+                {
+                    SetErrorMessage(errorMessage);
+                    SetPassword(null);
+                }
             }
         }
 
