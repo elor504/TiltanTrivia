@@ -203,7 +203,7 @@ public partial class TriviaManager
 
             class ResponseQuestion
             {
-                public string question;
+                public string Question;
                 public string Answer1;
                 public string Answer2;
                 public string Answer3;
