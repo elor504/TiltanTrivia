@@ -59,7 +59,6 @@ public partial class TriviaManager : MonoBehaviour
         static public TriviaUIManager uiManager;
         public void Enter()
         {
-            SetLoadingEvent(false);
             OnEnter();
         }
         public void Exit()

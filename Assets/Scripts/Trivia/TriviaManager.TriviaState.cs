@@ -16,7 +16,7 @@ public partial class TriviaManager
                 if (stateAtLogin != null)
                     stateAtLogin.Exit();
                 stateAtLogin = value;
-                stateAtLogin.Exit();
+                stateAtLogin.Enter();
             }
         }
         public override void OnEnter()
