@@ -6,7 +6,7 @@ public class TriviaUI_Editor : Editor
     // The various categories the editor will display the variables in 
     public enum DisplayCategory
     {
-        Login, Trivia
+        General, Login, Trivia
     }
 
     // The enum field that will determine what variables to display in the Inspector
@@ -22,6 +22,9 @@ public class TriviaUI_Editor : Editor
 
         // Switch statement to handle what happens for each category
         switch (categoryToDisplay) {
+            case DisplayCategory.General:
+                DisplayGeneralElements();
+                break;
             case DisplayCategory.Login:
                 DisplayLoginElements();
                 break;
@@ -29,8 +32,14 @@ public class TriviaUI_Editor : Editor
             case DisplayCategory.Trivia:
                 DisplayTriviaElements();
                 break;
+
         }
         serializedObject.ApplyModifiedProperties();
+    }
+    // When the categoryToDisplay enum is at "General"
+    void DisplayGeneralElements()
+    {
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("errorMessage"));
     }
 
     // When the categoryToDisplay enum is at "Login"
@@ -39,11 +48,13 @@ public class TriviaUI_Editor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("signupWindow"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("createRoomWindow"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("joinRoomWindow"));
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("errorMessage"));
     }
 
     // When the categoryToDisplay enum is at "Trivia"
     void DisplayTriviaElements() {
-        EditorGUILayout.PropertyField(serializedObject.FindProperty("triviaWindow"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("gameWindow"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("playersWindow"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("waitingWindow"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("resultsWindow"));
     }
 }

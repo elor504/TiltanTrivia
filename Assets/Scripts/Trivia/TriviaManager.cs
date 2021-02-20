@@ -15,20 +15,17 @@ public partial class TriviaManager : MonoBehaviour
             gameState.OnEnter();
         }
     }
-    public string username;
+    private string username;
     public string GetSetUsername
     {
         get => username;
-        set
-        {
-            username = value;
-        }
+        set => username = value;
     }
+    private string opponentUsername;
     public int playerID;
-    public int gameroomID;
+    public int roomID;
     public string roomPassword;
     public event Action<bool> SetLoadingEvent;
-    //TriviaUIManager uIManager;
 
     public static TriviaManager _instance;
     private void Awake()
@@ -49,18 +46,18 @@ public partial class TriviaManager : MonoBehaviour
     public void UpdateGameroomID(Action callback = null) => StartCoroutine(UpdateRoomIdCoro(callback));
     private IEnumerator UpdateRoomIdCoro(Action callback = null)
     {
-        yield return StartCoroutine(WebFetch.HttpGet(WebFetch.GetRoomIdURI(playerID), (success, json, errorMessage) =>
+        yield return StartCoroutine(WebFetch.HttpGet(WebFetch.GetRoomIdURI(playerID), (response) =>
         {
-            GetRoomIdResponse(success, json, errorMessage);
+            GetRoomIdResponse(response);
             callback?.Invoke();
         }));
     }
-    private void GetRoomIdResponse(bool success, string json, string errorMessage)
+    private void GetRoomIdResponse(HttpResponse response)
     {
-        if (success)
+        if (response.success)
         {
-            if (int.TryParse(json, out int gameroomID))
-                this.gameroomID = gameroomID;
+            if (int.TryParse(response.json, out int gameroomID))
+                this.roomID = gameroomID;
             else
             {
                 GetSetGameState.SetErrorMessage("Room ID parse error.");
@@ -68,7 +65,7 @@ public partial class TriviaManager : MonoBehaviour
             }
         }
         else
-            GetSetGameState.SetErrorMessage(errorMessage);
+            GetSetGameState.SetErrorMessage(response.errorMessage);
         SetLoadingEvent(false);
     }
     public abstract class State

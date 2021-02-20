@@ -11,6 +11,8 @@ public static class WebFetch
     public static string SignupURI<T>(T username) => "https://localhost:44306/api/Player?playerName=" + username.ToString();
     public static string FindMatchURI<T>(T playerID) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString();
     public static string GetRoomIdURI<T>(T playerID) => "https://localhost:44306/api/GetGameRoomID?playerId=" + playerID.ToString();
+    public static string GetRoomIdURI<T1,T2>(T1 roomID,T2 playerID) => "https://localhost:44306/api/GameRooms?GameRoomId="+ roomID + "&PlayerId=" + playerID.ToString();
+    public static string GetIsPlayer2LoggedInURI<T>(T roomID) => "https://localhost:44306/api/CheckPlayerConnection?gameRoomId=" + roomID.ToString();
     public static string CreateRooomURI<T1,T2>(T1 playerID, T2 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "&PW=" + password.ToString();
     public static string JoinRooomURI<T1,T2,T3>(T1 playerID, T2 roomID, T3 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "&GameRoomId=" + roomID.ToString() + "&PW=" + password.ToString();
     public static IEnumerator ConnectToAPI(string api, Action<string> callback)
@@ -85,7 +87,7 @@ public static class WebFetch
     /// Call the callback action on finish with the values: (success, json, error)
     /// </param>
     /// <returns></returns>
-    public static IEnumerator HttpGet(string uri, Action<bool, string, string> callback = null)
+    public static IEnumerator HttpGet(string uri, Action<HttpResponse> callback = null)
     {
         using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
@@ -94,54 +96,17 @@ public static class WebFetch
             if (webReq.isNetworkError || webReq.isHttpError)
             {
                 Debug.Log("Error");
-                callback?.Invoke(false, "", webReq.error);
+                callback?.Invoke(new HttpResponse(false, "", webReq.error));
             }
             else
             {
                 string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
                 Debug.Log(data);
                 Debug.Log("Recieved!");
-                callback?.Invoke(true, data, "");
+                callback?.Invoke(new HttpResponse(true, data, ""));
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private const string defaultContentType = "application/json";
     public static IEnumerator HttpPost(string uri, string jsonBody, Action<string> callback = null)
     {
@@ -171,3 +136,16 @@ public static class WebFetch
 
     }
 }
+public struct HttpResponse
+{
+    public bool success;
+    public string json;
+    public string errorMessage;
+
+    public HttpResponse(bool success, string json, string error)
+    {
+        this.success = success;
+        this.json = json;
+        this.errorMessage = error;
+    }
+} 

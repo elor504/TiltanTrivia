@@ -66,20 +66,20 @@
                 SetLoadingEvent(true);
                 _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.FindMatchURI(_instance.playerID), FindMatchResponse));
             }
-            private void FindMatchResponse(bool success, string json, string errorMessage)
+            private void FindMatchResponse(HttpResponse response)
             {
-                if (success)
+                if (response.success)
                 {
-                    if (int.TryParse(json, out int gameroomID))
+                    if (int.TryParse(response.json, out int gameroomID))
                     {
-                        _instance.gameroomID = gameroomID;
+                        _instance.roomID = gameroomID;
                         _instance.GetSetGameState = new TriviaState();
                     }
                     else
                         SetErrorMessage("Json success parse error.");
                 }
                 else
-                    SetErrorMessage(errorMessage);
+                    SetErrorMessage(response.errorMessage);
             }
 
 
@@ -104,12 +104,12 @@
                 SetLoadingEvent(true);
                 _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.SignupURI(username), SignUpResponse));
             }
-            private void SignUpResponse(bool success, string json, string errorMessage)
+            private void SignUpResponse(HttpResponse response)
             {
-                if (success)
+                if (response.success)
                 {
                     _instance.GetSetUsername = username;
-                    if (int.TryParse(json, out int playerID))
+                    if (int.TryParse(response.json, out int playerID))
                     {
                         _instance.playerID = playerID;
                         ExitToMainWindow();
@@ -118,7 +118,7 @@
                         SetErrorMessage("Player ID parse error.");
                 }
                 else
-                    SetErrorMessage(errorMessage);
+                    SetErrorMessage(response.errorMessage);
                 SetLoadingEvent(false);
             }
         }
@@ -151,11 +151,11 @@
                 else
                     SetErrorMessage("Please fill the password field.");
             }
-            private void CreateRoomResponse(bool success, string json, string errorMessage)
+            private void CreateRoomResponse(HttpResponse response)
             {
-                if (success)
+                if (response.success)
                 {
-                    if (bool.TryParse(json, out bool jsonSuccess))
+                    if (bool.TryParse(response.json, out bool jsonSuccess))
                     {
                         _instance.roomPassword = password;
                         _instance.UpdateGameroomID(() => { _instance.GetSetGameState = new TriviaState(); });
@@ -168,7 +168,7 @@
                 }
                 else
                 {
-                    SetErrorMessage(errorMessage);
+                    SetErrorMessage(response.errorMessage);
                     SetPassword(null);
                 }
             }
@@ -212,14 +212,14 @@
                 else
                     SetErrorMessage("Password or/and room ID not valid.");
             }
-            private void JoinRoomResponse(bool success, string json, string errorMessage)
+            private void JoinRoomResponse(HttpResponse response)
             {
-                if (success)
+                if (response.success)
                 {
-                    if (bool.TryParse(json, out bool jsonSuccess))
+                    if (bool.TryParse(response.json, out bool jsonSuccess))
                     {
                         _instance.roomPassword = password;
-                        _instance.gameroomID = roomID;
+                        _instance.roomID = roomID;
                         _instance.GetSetGameState = new TriviaState();
                     }
                     else
@@ -231,7 +231,7 @@
                 }
                 else
                 {
-                    SetErrorMessage(errorMessage);
+                    SetErrorMessage(response.errorMessage);
                     SetPassword(null);
                 }
             }
