@@ -14,7 +14,7 @@
                     stateAtLogin.Exit();
                 stateAtLogin = value;
                 if (stateAtLogin != null)
-                stateAtLogin.Enter();
+                    stateAtLogin.Enter();
             }
         }
 
@@ -28,10 +28,7 @@
             _instance.playerID = playerID;
             _instance.username = username;
             uiManager.SetMainLoginWindow(true);
-            if (_instance.playerID == 0 || _instance.username == "")
-                GetSetStateAtLogin = new SignupState();
-            else
-                GetSetStateAtLogin = new MainLoginWindowState();
+            GetSetStateAtLogin = new SignupState();
             _instance.SetLoadingEvent += SetInputState;
 
         }
