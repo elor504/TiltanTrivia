@@ -302,7 +302,7 @@ public partial class TriviaManager
                 if ((player1 && gameRoom.CurPlayer2Q == 16) || (!player1 && gameRoom.CurPlayer1Q == 16))
                 {
                     uiManager.resultsWindow.GetSetOpponentText = "Opponent Time: " + (player1 ? gameRoom.Player2Time : gameRoom.Player1Time);
-                    uiManager.resultsWindow.GetSetYourScore = "Answered: " + (player1 ? gameRoom.Player2Score : gameRoom.Player1Score) + "/16";
+                    uiManager.resultsWindow.GetSetOpponentScore = "Answered: " + (player1 ? gameRoom.Player2Score : gameRoom.Player1Score) + "/16";
                     if ((player1 && (gameRoom.Player1Score > gameRoom.Player2Score || (gameRoom.Player1Score == gameRoom.Player2Score && gameRoom.Player1Time < gameRoom.Player2Score)))
                         || (!player1 && (gameRoom.Player2Score > gameRoom.Player1Score || (gameRoom.Player2Score == gameRoom.Player1Score && gameRoom.Player2Time < gameRoom.Player1Score))))
                         uiManager.resultsWindow.SetResult(ResultWindowState.Won);
