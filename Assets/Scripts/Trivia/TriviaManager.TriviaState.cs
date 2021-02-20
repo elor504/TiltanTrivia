@@ -314,6 +314,7 @@ public partial class TriviaManager
                     uiManager.resultsWindow.GetSetYourScore = "Answered: ";
                     uiManager.resultsWindow.SetResult(ResultWindowState.Waiting);
                     gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(updateInterval));
+                    SetLoadingEvent(false);
                 }
             }
             public override void SetInputState(bool state) => uiManager.resultsWindow.GetReturnToMainMenuButton.interactable = state;
