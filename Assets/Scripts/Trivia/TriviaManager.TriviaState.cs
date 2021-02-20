@@ -281,6 +281,7 @@ public partial class TriviaManager
             }
             void UpdateGameRoomSuccess(HttpResponse<GameRoomData> response)
             {
+                Debug.Log(this);
                 gameRoom = response.body;
                 if(gameRoom.Player1Id == _instance.playerID || gameRoom.Player2Id == _instance.playerID)
                 {
