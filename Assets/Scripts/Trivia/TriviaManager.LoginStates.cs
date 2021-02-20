@@ -241,7 +241,7 @@
                 else
                 {
                     if (response.errorMessage == "")
-                        response.errorMessage = "Server error!";
+                        response.errorMessage = "Password or/and room ID not valid.";
                     FailureResponse(response);
                 }
 
