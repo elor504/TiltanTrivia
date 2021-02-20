@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
+public enum QuestionRecord { Unanswered, Wrong, Right}
 public class TriviaUIManager : MonoBehaviour
 {
     #region UI elements refrence
@@ -81,14 +82,25 @@ public class TriviaUIManager : MonoBehaviour
     #endregion
     #region Trivia elements
     [Serializable]
-    public class TriviaWindow
+    public class GameWindow
     {
         public GameObject mainGameobject;
         public TextMeshProUGUI timerText;
         public TextMeshProUGUI questionText;
         public TextMeshProUGUI[] answersText;
     }
-    [SerializeField] TriviaWindow triviaWindow;
+    [Serializable]
+    public class PlayersWindow
+    {
+        public GameObject mainGameobject;
+        public TextMeshProUGUI player1Name;
+        public TextMeshProUGUI player2Name;
+        public Image player2Status;
+        public Image[] player1QuestionBar;
+        public Image[] player2QuestionBar;
+    }
+    [SerializeField] GameWindow gameWindow;
+    [SerializeField] PlayersWindow playersWindow;
 
     #endregion
     #endregion
@@ -106,9 +118,8 @@ public class TriviaUIManager : MonoBehaviour
     }
     #region Trivia login windows
     //Signup window
-    public void OpenSignupUI() => signupWindow.mainGameobject.SetActive(true);
-    public void CloseSignupUI() {
-        signupWindow.mainGameobject.SetActive(false);
+    public void SetSignupWindow(bool state) {
+        signupWindow.mainGameobject.SetActive(state);
         HideErrorMessage();
     }
     //General
@@ -135,21 +146,21 @@ public class TriviaUIManager : MonoBehaviour
     }
     #endregion
     #region Trivia UI
-    public void OpenTriviaUI() => triviaWindow.mainGameobject.SetActive(true);
-    public void CloseTriviaUI() => triviaWindow.mainGameobject.SetActive(false);
+    public void OpenTriviaUI() => playersWindow.mainGameobject.SetActive(true);
+    public void CloseTriviaUI() => playersWindow.mainGameobject.SetActive(false);
     public void UpdateQuestion(string Question, string answer1, string answer2, string answer3, string answer4) {
         UpdateQuestionUIText(Question);
         string[] AnswerCache = new string[] { answer1, answer2, answer3, answer4 };
         UpdateAnswerUIText(AnswerCache);
     }
-    void UpdateQuestionUIText(string text) => triviaWindow.questionText.text = text;
+    void UpdateQuestionUIText(string text) => gameWindow.questionText.text = text;
     void UpdateAnswerUIText(string[] answers) {
         for (int i = 0; i < answers.Length; i++)
-            triviaWindow.answersText[i].text = answers[i];
+            gameWindow.answersText[i].text = answers[i];
     }
     void AnswerButton(int answerNum) { }
     public void UpdateTimerUI(float Time) {
-        triviaWindow.timerText.text = Mathf.CeilToInt(Time).ToString();
+        gameWindow.timerText.text = Mathf.CeilToInt(Time).ToString();
         if (Time < 5) {
 
         }

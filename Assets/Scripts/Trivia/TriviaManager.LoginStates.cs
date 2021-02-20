@@ -89,13 +89,13 @@
             string username;
             public override void OnEnter()
             {
-                uiManager.OpenSignupUI();
+                uiManager.SetSignupWindow(true);
                 uiManager.InputFieldEvent_Register(uiManager.signupWindow.GetInput, Signup);
             }
             public override void OnExit()
             {
                 uiManager.InputFieldEvent_Unregister(uiManager.signupWindow.GetInput, Signup);
-                uiManager.CloseSignupUI();
+                uiManager.SetSignupWindow(false);
             }
             public override void SetInputState(bool value) => uiManager.signupWindow.SetInputState(value);
             private void Signup(string username)
