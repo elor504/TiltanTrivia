@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using UnityEngine;
 public partial class TriviaManager
 {
@@ -248,42 +249,72 @@ public partial class TriviaManager
         }
         private class ResultsState : StateAtTrivia
         {
+            const float updateInterval = 1.5f;
+            GameRoomData gameRoom;
+            Coroutine gameroomUpdater;
             public override void OnEnter()
             {
                 uiManager.resultsWindow.mainGameobject.SetActive(true);
                 uiManager.ButtonEvent_Register(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
-                UpdateGameRoomInformation();
+                gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(0));
             }
 
             public override void OnExit()
             {
+                _instance.StopCoroutine(gameroomUpdater);
                 uiManager.resultsWindow.mainGameobject.SetActive(false);
                 uiManager.ButtonEvent_Unregister(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
             }
-            private void UpdateGameRoomInformation()
+            IEnumerator UpdateGameRoomInformation(float delay)
             {
+                if (delay > 0)
+                    yield return new WaitForSeconds(delay);
                 SetLoadingEvent(true);
-                _instance.StartCoroutine(WebFetch.HttpGet(
+                _instance.StartCoroutine(WebFetch.HttpGet<GameRoomData>(
                     WebFetch.GetRoomURI(_instance.roomID),
-                    CheckIfFinishedSuccess,
+                    UpdateGameRoomSuccess,
                     FailureResponse
                     ));
             }
-            void UpdateGameRoomResponse(HttpResponse response)
+            void UpdateGameRoomSuccess(HttpResponse<GameRoomData> response)
             {
-                if (response.success)
+                gameRoom = response.body;
+                uiManager.resultsWindow.GetSetYourTime = "Your Time: " + gameRoom.Player1Time;
+                uiManager.resultsWindow.GetSetYourScore = "Your Score: " + gameRoom.Player1Score + "/16";
+                if (gameRoom.CurPlayer2Q == 16)
                 {
-                    HelperFunc.NotImplementedError();
+                    uiManager.resultsWindow.GetSetOpponentText = "Your Time: " + gameRoom.Player2Time;
+                    uiManager.resultsWindow.GetSetYourScore = "Your Score: " + gameRoom.Player2Score + "/16";
+                    if (gameRoom.Player1Score > gameRoom.Player2Score || (gameRoom.Player1Score == gameRoom.Player2Score && gameRoom.Player1Time < gameRoom.Player2Score))
+                        uiManager.resultsWindow.SetResult(ResultWindowState.Won);
+                    else
+                        uiManager.resultsWindow.SetResult(ResultWindowState.Lost);
+                    SetLoadingEvent(false);
                 }
                 else
-                    SetErrorMessage(response.errorMessage);
-                SetLoadingEvent(false);
+                {
+                    uiManager.resultsWindow.SetResult(ResultWindowState.Waiting);
+                    gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(updateInterval));
+                }
+
+
             }
-            public override void SetInputState(bool state)
-            {
-                uiManager.resultsWindow.GetReturnToMainMenuButton.interactable = state;
-            }
+            public override void SetInputState(bool state) => uiManager.resultsWindow.GetReturnToMainMenuButton.interactable = state;
             void ReturnToMainMenu() => _instance.GetSetGameState = new LoginState();
+            public class GameRoomData
+            {
+                public int GameRoomId;
+                public string RoomPassword;
+                public int Player1Id;
+                public int Player2Id;
+                public int Player1Score;
+                public int Player2Score;
+                public float Player1Time;
+                public float Player2Time;
+                public DateTime GameStartTime;
+                public int CurPlayer1Q;
+                public int CurPlayer2Q;
+            }
         }
     }
 }

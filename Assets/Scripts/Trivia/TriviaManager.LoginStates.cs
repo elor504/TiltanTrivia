@@ -152,7 +152,7 @@
                 if (response.body)
                 {
                     _instance.roomPassword = password;
-                    _instance.UpdateGameroomID(() => { _instance.GetSetGameState = new TriviaState(); });
+                    UpdateRoomId();
                 }
                 else
                 {
@@ -160,6 +160,21 @@
                         response.errorMessage = "Server error";
                     FailureResponse(response);
                 }
+            }
+            private void UpdateRoomId()
+            {
+                SetLoadingEvent(true);
+                _instance.StartCoroutine(WebFetch.HttpGet(
+                    WebFetch.GetRoomIdURI(_instance.playerID),
+                    GetRoomIdResponse,
+                    FailureResponse
+                    ));
+            }
+            private void GetRoomIdResponse(HttpResponse<int> response)
+            {
+                _instance.roomID = response.body;
+                _instance.GetSetGameState = new TriviaState();
+                SetLoadingEvent(false);
             }
 
         }

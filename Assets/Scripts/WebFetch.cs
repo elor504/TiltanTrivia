@@ -96,94 +96,104 @@ public static class WebFetch
     /// <returns></returns>
     public static IEnumerator HttpGet<T>(string uri, Action<HttpResponse<T>> onSuccessCallback = null, Action<HttpResponse<T>> onFailureCallback = null) where T : class
     {
-        using UnityWebRequest webReq = UnityWebRequest.Get(uri);
-        webReq.timeout = timeout;
-        yield return webReq.SendWebRequest();
-        if (webReq.isNetworkError || webReq.isHttpError)
+        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
-            Debug.Log("Error");
-            onFailureCallback?.Invoke(new HttpResponse<T>(false, default, webReq.error));
-        }
-        else
-        {
-            string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-            if (JsonParser.TryParseJson(data, out T body))
-                onSuccessCallback?.Invoke(new HttpResponse<T>(true, body, ""));
+            webReq.timeout = timeout;
+            yield return webReq.SendWebRequest();
+            if (webReq.isNetworkError || webReq.isHttpError)
+            {
+                Debug.Log("Error");
+                onFailureCallback?.Invoke(new HttpResponse<T>(false, default, webReq.error));
+            }
             else
-                onFailureCallback?.Invoke(new HttpResponse<T>(false, body, "Failed to parse json."));
+            {
+                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
+                if (JsonParser.TryParseJson(data, out T body))
+                    onSuccessCallback?.Invoke(new HttpResponse<T>(true, body, ""));
+                else
+                    onFailureCallback?.Invoke(new HttpResponse<T>(false, body, "Failed to parse json."));
+            }
         }
     }
     public static IEnumerator HttpGet(string uri, Action<HttpResponse<bool>> onSuccessCallback = null, Action<HttpResponse<bool>> onFailureCallback = null)
     {
-        using UnityWebRequest webReq = UnityWebRequest.Get(uri);
-        webReq.timeout = timeout;
-        yield return webReq.SendWebRequest();
-        if (webReq.isNetworkError || webReq.isHttpError)
+        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
-            Debug.Log("Error");
-            onFailureCallback?.Invoke(new HttpResponse<bool>(false, default, webReq.error));
-        }
-        else
-        {
-            string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-            if (bool.TryParse(data, out bool body))
-                onSuccessCallback?.Invoke(new HttpResponse<bool>(true, body, ""));
+            webReq.timeout = timeout;
+            yield return webReq.SendWebRequest();
+            if (webReq.isNetworkError || webReq.isHttpError)
+            {
+                Debug.Log("Error");
+                onFailureCallback?.Invoke(new HttpResponse<bool>(false, default, webReq.error));
+            }
             else
-                onFailureCallback?.Invoke(new HttpResponse<bool>(false, body, "Failed to parse json."));
+            {
+                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
+                if (bool.TryParse(data, out bool body))
+                    onSuccessCallback?.Invoke(new HttpResponse<bool>(true, body, ""));
+                else
+                    onFailureCallback?.Invoke(new HttpResponse<bool>(false, body, "Failed to parse json."));
+            }
         }
     }
     public static IEnumerator HttpGet(string uri, Action<HttpResponse<int>> onSuccessCallback = null, Action<HttpResponse<int>> onFailureCallback = null)
     {
-        using UnityWebRequest webReq = UnityWebRequest.Get(uri);
-        webReq.timeout = timeout;
-        yield return webReq.SendWebRequest();
-        if (webReq.isNetworkError || webReq.isHttpError)
+        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
-            Debug.Log("Error");
-            onFailureCallback?.Invoke(new HttpResponse<int>(false, default, webReq.error));
-        }
-        else
-        {
-            string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-            if (int.TryParse(data, out int body))
-                onSuccessCallback?.Invoke(new HttpResponse<int>(true, body, ""));
+            webReq.timeout = timeout;
+            yield return webReq.SendWebRequest();
+            if (webReq.isNetworkError || webReq.isHttpError)
+            {
+                Debug.Log("Error");
+                onFailureCallback?.Invoke(new HttpResponse<int>(false, default, webReq.error));
+            }
             else
-                onFailureCallback?.Invoke(new HttpResponse<int>(false, body, "Failed to parse json."));
+            {
+                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
+                if (int.TryParse(data, out int body))
+                    onSuccessCallback?.Invoke(new HttpResponse<int>(true, body, ""));
+                else
+                    onFailureCallback?.Invoke(new HttpResponse<int>(false, body, "Failed to parse json."));
+            }
         }
     }
     public static IEnumerator HttpGet(string uri, Action<HttpResponse<float>> onSuccessCallback = null, Action<HttpResponse<float>> onFailureCallback = null)
     {
-        using UnityWebRequest webReq = UnityWebRequest.Get(uri);
-        webReq.timeout = timeout;
-        yield return webReq.SendWebRequest();
-        if (webReq.isNetworkError || webReq.isHttpError)
+        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
-            Debug.Log("Error");
-            onFailureCallback?.Invoke(new HttpResponse<float>(false, default, webReq.error));
-        }
-        else
-        {
-            string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-            if (float.TryParse(data, out float body))
-                onSuccessCallback?.Invoke(new HttpResponse<float>(true, body, ""));
+            webReq.timeout = timeout;
+            yield return webReq.SendWebRequest();
+            if (webReq.isNetworkError || webReq.isHttpError)
+            {
+                Debug.Log("Error");
+                onFailureCallback?.Invoke(new HttpResponse<float>(false, default, webReq.error));
+            }
             else
-                onFailureCallback?.Invoke(new HttpResponse<float>(false, body, "Failed to parse json."));
+            {
+                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
+                if (float.TryParse(data, out float body))
+                    onSuccessCallback?.Invoke(new HttpResponse<float>(true, body, ""));
+                else
+                    onFailureCallback?.Invoke(new HttpResponse<float>(false, body, "Failed to parse json."));
+            }
         }
     }
     public static IEnumerator HttpGet(string uri, Action<HttpResponse<string>> onSuccessCallback = null, Action<HttpResponse<string>> onFailureCallback = null)
     {
-        using UnityWebRequest webReq = UnityWebRequest.Get(uri);
-        webReq.timeout = timeout;
-        yield return webReq.SendWebRequest();
-        if (webReq.isNetworkError || webReq.isHttpError)
+        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
-            Debug.Log("Error");
-            onFailureCallback?.Invoke(new HttpResponse<string>(false, default, webReq.error));
-        }
-        else
-        {
-            string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
-            onSuccessCallback?.Invoke(new HttpResponse<string>(true, data, ""));
+            webReq.timeout = timeout;
+            yield return webReq.SendWebRequest();
+            if (webReq.isNetworkError || webReq.isHttpError)
+            {
+                Debug.Log("Error");
+                onFailureCallback?.Invoke(new HttpResponse<string>(false, default, webReq.error));
+            }
+            else
+            {
+                string data = Encoding.UTF8.GetString(webReq.downloadHandler.data);
+                onSuccessCallback?.Invoke(new HttpResponse<string>(true, data, ""));
+            }
         }
     }
 
@@ -198,25 +208,26 @@ public static class WebFetch
     public static IEnumerator HttpPost(string uri, string jsonBody, Action<string> callback = null)
     {
 
-        using UnityWebRequest webReq = UnityWebRequest.Post(uri, jsonBody);
-        webReq.SetRequestHeader("Content-Type", defaultContentType);
-        webReq.uploadHandler.contentType = defaultContentType;
-        webReq.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonBody));
-
-        yield return webReq.SendWebRequest();
-
-        if (webReq.isNetworkError)
+        using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {
-            callback?.Invoke("Error");
-        }
-        else
-        {
-            //string data = System.Text.Encoding.UTF8.GetString(webReq.downloadHandler.data);
-            //Debug.Log(data);
+            webReq.SetRequestHeader("Content-Type", defaultContentType);
+            webReq.uploadHandler.contentType = defaultContentType;
+            webReq.uploadHandler = new UploadHandlerRaw(Encoding.UTF8.GetBytes(jsonBody));
 
-            callback?.Invoke("Send");
-        }
+            yield return webReq.SendWebRequest();
 
+            if (webReq.isNetworkError)
+            {
+                callback?.Invoke("Error");
+            }
+            else
+            {
+                //string data = System.Text.Encoding.UTF8.GetString(webReq.downloadHandler.data);
+                //Debug.Log(data);
+
+                callback?.Invoke("Send");
+            }
+        }
 
     }
 }

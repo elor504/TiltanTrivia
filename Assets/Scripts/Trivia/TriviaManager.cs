@@ -54,31 +54,6 @@ public partial class TriviaManager : MonoBehaviour
         roomPassword = "";
     }
     public void SetLoading(bool value) => SetLoadingEvent?.Invoke(value);
-    public void UpdateGameroomID(Action callback = null) => StartCoroutine(UpdateRoomIdCoro(callback));
-    private IEnumerator UpdateRoomIdCoro(Action callback = null)
-    {
-        yield return StartCoroutine(WebFetch.HttpGet(WebFetch.GetRoomIdURI(playerID), (response) =>
-        {
-            GetRoomIdResponse(response);
-            callback?.Invoke();
-        }));
-    }
-    private void GetRoomIdResponse(HttpResponse response)
-    {
-        if (response.success)
-        {
-            if (int.TryParse(response.json, out int gameroomID))
-                this.roomID = gameroomID;
-            else
-            {
-                GetSetGameState.SetErrorMessage("Room ID parse error.");
-                Debug.LogError("Room ID parse error.");
-            }
-        }
-        else
-            GetSetGameState.SetErrorMessage(response.errorMessage);
-        SetLoadingEvent(false);
-    }
     public abstract class State
     {
         static public TriviaUIManager uiManager;

@@ -401,7 +401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &29116360
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1956,7 +1956,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Your Opponent time: 3:59'
+  m_text: 'Opponent Time: 3:59'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b49b51caff95db541be7f673477c789d, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: b49b51caff95db541be7f673477c789d, type: 2}
@@ -11727,7 +11727,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Answered 7/16 Correctly
+  m_text: 'Answered: 7/16'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b49b51caff95db541be7f673477c789d, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: b49b51caff95db541be7f673477c789d, type: 2}
@@ -12658,7 +12658,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Answered 5/16 Correctly
+  m_text: 'Answered: 5/16'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b49b51caff95db541be7f673477c789d, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: b49b51caff95db541be7f673477c789d, type: 2}

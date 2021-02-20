@@ -180,11 +180,23 @@ public class TriviaUIManager : MonoBehaviour
             get => yourTime.text;
             set => yourTime.text = value;
         }
-        [SerializeField] TextMeshProUGUI opponentText;
+        [SerializeField] TextMeshProUGUI yourScore;
+        public string GetSetYourScore
+        {
+            get => yourScore.text;
+            set => yourScore.text = value;
+        }
+        [SerializeField] TextMeshProUGUI opponentTime;
         public string GetSetOpponentText
         {
-            get => opponentText.text;
-            set => opponentText.text = value;
+            get => opponentTime.text;
+            set => opponentTime.text = value;
+        }
+        [SerializeField] TextMeshProUGUI opponentScore;
+        public string GetSetOpponentScore
+        {
+            get => opponentScore.text;
+            set => opponentScore.text = value;
         }
         [SerializeField] Button returnToMainMenuButton;
         public Button GetReturnToMainMenuButton => returnToMainMenuButton;
