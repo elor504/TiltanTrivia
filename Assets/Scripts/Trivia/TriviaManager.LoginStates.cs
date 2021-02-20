@@ -27,7 +27,7 @@
             else
                 GetSetStateAtLogin = new MainLoginWindowState();
             _instance.SetLoadingEvent += SetInputState;
-            
+
         }
 
         public override void OnExit()
@@ -44,8 +44,6 @@
         {
             protected void SetLoginState(StateAtLogin stateAtLogin) => loginState.GetSetStateAtLogin = stateAtLogin;
             protected void ExitToMainWindow() => SetLoginState(new MainLoginWindowState());
-            protected void SetLoadingEvent(bool state) => _instance.SetLoadingEvent(state);
-            protected void SetErrorMessage(string error) => TriviaUIManager._instance.SetErrorMessage(error);
         }
         class MainLoginWindowState : StateAtLogin
         {
@@ -68,23 +66,19 @@
             {
 
                 SetLoadingEvent(true);
-                _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.FindMatchURI(_instance.playerID), FindMatchResponse));
+                _instance.StartCoroutine(WebFetch.HttpGet(
+                    WebFetch.FindMatchURI(_instance.playerID),
+                    FindMatchSuccess,
+                    FailureResponse
+                    ));
             }
-            private void FindMatchResponse(HttpResponse response)
+            private void FindMatchSuccess(HttpResponse<int> response)
             {
-                if (response.success)
-                {
-                    if (int.TryParse(response.json, out int gameroomID))
-                    {
-                        _instance.roomID = gameroomID;
-                        _instance.GetSetGameState = new TriviaState();
-                    }
-                    else
-                        SetErrorMessage("Json success parse error.");
-                }
-                else
-                    SetErrorMessage(response.errorMessage);
+                _instance.roomID = response.body;
+                SetLoadingEvent(false);
+                _instance.GetSetGameState = new TriviaState();
             }
+
 
 
         }
@@ -106,23 +100,17 @@
             {
                 this.username = username;
                 SetLoadingEvent(true);
-                _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.SignupURI(username), SignUpResponse));
+                _instance.StartCoroutine(WebFetch.HttpGet(
+                WebFetch.SignupURI(username),
+                SignUpSuccess,
+                FailureResponse
+                ));
             }
-            private void SignUpResponse(HttpResponse response)
+            private void SignUpSuccess(HttpResponse<int> response)
             {
-                if (response.success)
-                {
-                    _instance.GetSetUsername = username;
-                    if (int.TryParse(response.json, out int playerID))
-                    {
-                        _instance.playerID = playerID;
-                        ExitToMainWindow();
-                    }
-                    else
-                        SetErrorMessage("Player ID parse error.");
-                }
-                else
-                    SetErrorMessage(response.errorMessage);
+
+                _instance.playerID = response.body;
+                ExitToMainWindow();
                 SetLoadingEvent(false);
             }
         }
@@ -150,32 +138,30 @@
                 if (_instance.roomPassword != null)
                 {
                     SetLoadingEvent(true);
-                    _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.CreateRooomURI(_instance.playerID, password), CreateRoomResponse));
+                    _instance.StartCoroutine(WebFetch.HttpGet(
+                    WebFetch.CreateRooomURI(_instance.playerID, password),
+                    CreateRoomSuccess,
+                    FailureResponse
+                    ));
                 }
                 else
                     SetErrorMessage("Please fill the password field.");
             }
-            private void CreateRoomResponse(HttpResponse response)
+            private void CreateRoomSuccess(HttpResponse<bool> response)
             {
-                if (response.success)
+                if (response.body)
                 {
-                    if (bool.TryParse(response.json, out bool jsonSuccess))
-                    {
-                        _instance.roomPassword = password;
-                        _instance.UpdateGameroomID(() => { _instance.GetSetGameState = new TriviaState(); });
-                    }
-                    else
-                    {
-                        SetErrorMessage("Json success parse error.");
-                        SetPassword(null);
-                    }
+                    _instance.roomPassword = password;
+                    _instance.UpdateGameroomID(() => { _instance.GetSetGameState = new TriviaState(); });
                 }
                 else
                 {
-                    SetErrorMessage(response.errorMessage);
-                    SetPassword(null);
+                    if (response.errorMessage == "")
+                        response.errorMessage = "Server error";
+                    FailureResponse(response);
                 }
             }
+
         }
         class JoinRoomState : StateAtLogin
         {
@@ -211,33 +197,24 @@
                 if (password != null && roomID != 0)
                 {
                     SetLoadingEvent(true);
-                    _instance.StartCoroutine(WebFetch.HttpGet(WebFetch.JoinRooomURI(_instance.playerID, roomID, password), JoinRoomResponse));
+                    _instance.StartCoroutine(WebFetch.HttpGet(
+                    WebFetch.JoinRooomURI(_instance.playerID, roomID, password),
+                    JoinRoomSuccess,
+                    FailureResponse
+                    ));
                 }
                 else
                     SetErrorMessage("Password or/and room ID not valid.");
             }
-            private void JoinRoomResponse(HttpResponse response)
+            private void JoinRoomSuccess(HttpResponse<bool> response)
             {
-                if (response.success)
+                if (response.body)
                 {
-                    if (bool.TryParse(response.json, out bool jsonSuccess))
-                    {
-                        _instance.roomPassword = password;
-                        _instance.roomID = roomID;
-                        _instance.GetSetGameState = new TriviaState();
-                    }
-                    else
-                    {
-                        SetErrorMessage("Json success parse error.");
-                        SetPassword(null);
-                        SetRoomID("0");
-                    }
+                    _instance.roomPassword = password;
+                    _instance.roomID = roomID;
+                    _instance.GetSetGameState = new TriviaState();
                 }
-                else
-                {
-                    SetErrorMessage(response.errorMessage);
-                    SetPassword(null);
-                }
+
             }
         }
 

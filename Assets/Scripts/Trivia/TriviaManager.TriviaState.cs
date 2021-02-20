@@ -42,8 +42,7 @@ public partial class TriviaManager
         public abstract class StateAtTrivia : State
         {
             protected void SetTriviaState(StateAtTrivia stateAtTrivia) => triviaState.GetSetStateAtTrivia = stateAtTrivia;
-            protected void SetLoadingEvent(bool state) => _instance.SetLoadingEvent(state);
-            protected void SetErrorMessage(string error) => TriviaUIManager._instance.SetErrorMessage(error);
+
         }
         private class WaitingRoomState : StateAtTrivia
         {
@@ -64,48 +63,37 @@ public partial class TriviaManager
             {
                 if (delay > 0)
                     yield return new WaitForSeconds(delay);
-                WebFetch.HttpGet(WebFetch.GetIsPlayer2LoggedInURI(_instance.roomID), CheckForOpponentResponse);
+                _instance.StartCoroutine(WebFetch.HttpGet(
+                WebFetch.GetIsPlayer2LoggedInURI(_instance.roomID),
+                CheckForOpponentSuccess,
+                FailureResponse
+                ));
             }
-            void CheckForOpponentResponse(HttpResponse response)
+            void CheckForOpponentSuccess(HttpResponse<bool> response)
             {
-                if (response.success)
+                if (response.body)
                 {
-                    if (bool.TryParse(response.json, out bool jsonSuccess) && jsonSuccess)
-                    {
-                        Debug.Log(jsonSuccess);
-                        if (jsonSuccess)
-                        {
-                            uiManager.playersWindow.SetPlayer2State(true);
-                            UpdateOpponentUsername();
-                        }
-                        else
-                            CheckForOpponent(updateInterval);
-                    }
-                    else
-                        SetErrorMessage("Json success parse error.");
+                    uiManager.playersWindow.SetPlayer2State(true);
+                    UpdateOpponentUsername();
                 }
                 else
-                    SetErrorMessage(response.errorMessage);
+                    CheckForOpponent(updateInterval);
             }
             void UpdateOpponentUsername()
             {
                 SetLoadingEvent(true);
-                WebFetch.HttpGet(WebFetch.GetOpponentUsernameURI(_instance.roomID, _instance.playerID), UpdateOpponentUsernameResponse);
+                _instance.StartCoroutine(WebFetch.HttpGet(
+                WebFetch.GetOpponentUsernameURI(_instance.roomID, _instance.playerID),
+                UpdateOpponentUsernameSuccess,
+                FailureResponse
+                ));
             }
-            void UpdateOpponentUsernameResponse(HttpResponse response)
+            void UpdateOpponentUsernameSuccess(HttpResponse<string> response)
             {
-                if (response.success)
-                {
-                    _instance.opponentUsername = response.json;
-                    uiManager.playersWindow.GetSetPlayer2Name = response.json;
-                    SetLoadingEvent(false);
-                    SetTriviaState(new GameRunningState());
-                }
-                else
-                {
-                    SetLoadingEvent(true);
-                    SetErrorMessage(response.errorMessage);
-                }
+                _instance.opponentUsername = response.body;
+                uiManager.playersWindow.GetSetPlayer2Name = response.body;
+                SetLoadingEvent(false);
+                SetTriviaState(new GameRunningState());
             }
         }
         private class GameRunningState : StateAtTrivia
@@ -154,22 +142,15 @@ public partial class TriviaManager
             private void FetchQuestion()
             {
                 SetLoadingEvent(true);
-                WebFetch.HttpGet(WebFetch.GetQuestionURI(_instance.roomID, _instance.playerID), FetchQuestionResponse);
+                _instance.StartCoroutine(WebFetch.HttpGet<ResponseQuestion>(
+                WebFetch.GetQuestionURI(_instance.roomID, _instance.playerID),
+                FetchQuestionSuccess,
+                FailureResponse
+                ));
             }
-            private void FetchQuestionResponse(HttpResponse response)
+            private void FetchQuestionSuccess(HttpResponse<ResponseQuestion> response)
             {
-                if (response.success)
-                {
-                    if (JsonParser.TryParseJson(response.json, out ResponseQuestion responseQuestion))
-                    {
-                        LoadQuestion(responseQuestion);
-                    }
-                    else
-                        SetErrorMessage("Failed to parse question json!");
-
-                }
-                else
-                    SetErrorMessage(response.errorMessage);
+                LoadQuestion(response.body);
                 SetLoadingEvent(false);
 
             }
@@ -183,59 +164,39 @@ public partial class TriviaManager
             {
                 selectedAnswer = answerNum;
                 SetLoadingEvent(true);
-                WebFetch.HttpGet(WebFetch.GetInsertAnswerURI(_instance.roomID, _instance.playerID, answerNum), InsertAnswerResponse);
+                _instance.StartCoroutine(WebFetch.HttpGet(
+                WebFetch.GetInsertAnswerURI(_instance.roomID, _instance.playerID, answerNum),
+                InsertAnswerSuccess,
+                FailureResponse
+                ));
             }
-            void InsertAnswerResponse(HttpResponse response)
+            void InsertAnswerSuccess(HttpResponse<int> response)
             {
-                if (response.success)
-                {
-                    if (int.TryParse(response.json, out int correctAnswer))
-                    {
-                        uiManager.playersWindow.SetPlayerQuestionRecord(currentQuestionNum, (selectedAnswer == correctAnswer) ? QuestionRecord.Right : QuestionRecord.Wrong);
-                        currentQuestionNum++;
-                        CheckIfFinished();
-                    }
-                    else
-                    {
-                        SetErrorMessage("Failed to parse correct answer json");
-                        SetLoadingEvent(false);
-
-                    }
-                }
-                else
-                {
-                    SetErrorMessage(response.errorMessage);
-                    SetLoadingEvent(false);
-                }
+                uiManager.playersWindow.SetPlayerQuestionRecord(currentQuestionNum, (selectedAnswer == response.body) ? QuestionRecord.Right : QuestionRecord.Wrong);
+                currentQuestionNum++;
+                CheckIfFinished();
             }
 
-            private void CheckIfFinished() => WebFetch.HttpGet(WebFetch.GetPlayerFinishedURI(_instance.roomID, _instance.playerID), CheckIfFinishedResponse);
-            void CheckIfFinishedResponse(HttpResponse response)
+
+            private void CheckIfFinished()
             {
-                if (response.success)
-                {
-                    if (bool.TryParse(response.json, out bool finished))
-                    {
-                        if (finished)
-                        {
-                            SetLoadingEvent(false);
-                            SetTriviaState(new ResultsState());
-                        }
-                        else
-                            FetchQuestion();
-                    }
-                    else
-                    {
-                        SetLoadingEvent(false);
-                        SetErrorMessage("Failed to parse whether player finished");
-                    }
-                }
-                else
+                _instance.StartCoroutine(WebFetch.HttpGet(
+                    WebFetch.GetPlayerFinishedURI(_instance.roomID, _instance.playerID),
+                    CheckIfFinishedSuccess,
+                    FailureResponse
+                    ));
+            }
+            void CheckIfFinishedSuccess(HttpResponse<bool> response)
+            {
+                if (response.body)
                 {
                     SetLoadingEvent(false);
-                    SetErrorMessage(response.errorMessage);
+                    SetTriviaState(new ResultsState());
                 }
+                else
+                    FetchQuestion();
             }
+
 
             class ResponseQuestion
             {
@@ -302,7 +263,11 @@ public partial class TriviaManager
             private void UpdateGameRoomInformation()
             {
                 SetLoadingEvent(true);
-                WebFetch.HttpGet(WebFetch.GetRoomURI(_instance.roomID), UpdateGameRoomResponse);
+                _instance.StartCoroutine(WebFetch.HttpGet(
+                    WebFetch.GetRoomURI(_instance.roomID),
+                    CheckIfFinishedSuccess,
+                    FailureResponse
+                    ));
             }
             void UpdateGameRoomResponse(HttpResponse response)
             {

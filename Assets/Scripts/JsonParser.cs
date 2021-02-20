@@ -3,7 +3,7 @@ using UnityEngine;
 public static class JsonParser
 {
     public static bool TryParseJson<T>(string json, out T jsonObject) where T : class {
-        jsonObject = null;
+        jsonObject = default(T);
         if (json.Length < 1 || json == "")
             return false;
         try {
