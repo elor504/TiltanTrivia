@@ -22,7 +22,6 @@ public partial class TriviaManager
         public override void OnEnter()
         {
             triviaState = this;
-            _instance.SetLoadingEvent += SetInputState;
             uiManager.playersWindow.mainGameobject.SetActive(true);
             uiManager.playersWindow.SetPlayer2State(false);
             uiManager.playersWindow.ResetPlayerProgress();
@@ -33,7 +32,6 @@ public partial class TriviaManager
         public override void OnExit()
         {
             uiManager.playersWindow.mainGameobject.SetActive(false);
-            _instance.SetLoadingEvent -= SetInputState;
         }
         public override void SetErrorMessage(string value)
         {
