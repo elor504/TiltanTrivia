@@ -22,8 +22,12 @@
         {
             loginState = this;
             uiManager.SetMainLoginWindow(true);
-            GetSetStateAtLogin = new SignupState();
+            if (_instance.playerID == 0 || _instance.username == "")
+                GetSetStateAtLogin = new SignupState();
+            else
+                GetSetStateAtLogin = new MainLoginWindowState();
             _instance.SetLoadingEvent += SetInputState;
+            
         }
 
         public override void OnExit()

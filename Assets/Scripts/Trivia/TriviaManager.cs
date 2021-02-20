@@ -24,6 +24,7 @@ public partial class TriviaManager : MonoBehaviour
     private string opponentUsername;
     public int playerID;
     public int roomID;
+    public float totalTime;
     public string roomPassword;
     public event Action<bool> SetLoadingEvent;
 
@@ -37,10 +38,20 @@ public partial class TriviaManager : MonoBehaviour
     }
     private void Start()
     {
+        Reset();
         //uIManager = TriviaUIManager._instance;
         State.uiManager = TriviaUIManager._instance;
         GetSetGameState = new LoginState();
         SetLoadingEvent += (value) => { gameState.SetInputState(!value); };
+    }
+    public void Reset()
+    {
+        totalTime = 0;
+        GetSetUsername = "";
+        opponentUsername = "";
+        playerID = 0;
+        roomID = 0;
+        roomPassword = "";
     }
     public void SetLoading(bool value) => SetLoadingEvent?.Invoke(value);
     public void UpdateGameroomID(Action callback = null) => StartCoroutine(UpdateRoomIdCoro(callback));

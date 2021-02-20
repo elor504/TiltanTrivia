@@ -79,10 +79,6 @@ public class TriviaUIManager : MonoBehaviour
     public SignupWindow signupWindow;
     public CreateRoomWindow createRoomWindow;
     public JoinRoomWindow joinRoomWindow;
-    public void InputFieldEvent_Register(TMP_InputField inputField, UnityAction<string> unityEvent) => inputField.onEndEdit.AddListener(unityEvent);
-    public void InputFieldEvent_Unregister(TMP_InputField inputField, UnityAction<string> unityEvent) => inputField.onEndEdit.RemoveListener(unityEvent);
-    public void ButtonEvent_Register(Button button, UnityAction unityEvent) => button.onClick.AddListener(unityEvent);
-    public void ButtonEvent_Unregister(Button button, UnityAction unityEvent) => button.onClick.RemoveListener(unityEvent);
     #endregion
     #region Trivia elements
     [Serializable]
@@ -90,7 +86,7 @@ public class TriviaUIManager : MonoBehaviour
     {
         public GameObject mainGameobject;
         [SerializeField] TextMeshProUGUI timerText;
-        public string GetSetTimerText
+        private string GetSetTimerText
         {
             get => timerText.text;
             set => timerText.text = value;
@@ -102,7 +98,7 @@ public class TriviaUIManager : MonoBehaviour
             set => questionText.text = value;
         }
         [SerializeField] TextMeshProUGUI[] answersText;
-        public void UpdateAnswerUIText(string[] answers)
+        public void UpdateAnswerText(string[] answers)
         {
             for (int i = 0; i < answers.Length; i++)
                 answersText[i].text = answers[i];
@@ -110,8 +106,11 @@ public class TriviaUIManager : MonoBehaviour
         public void UpdateQuestion(string question, string[] answers)
         {
             GetSetQuestionText = question;
-            UpdateAnswerUIText(answers);
+            UpdateAnswerText(answers);
         }
+        public event Action<int> buttonClicked;
+        public void ButtonClicked(int buttonNum) => buttonClicked?.Invoke(buttonNum);
+        public void UpdateTimer(float Time) => GetSetTimerText = Mathf.CeilToInt(Time).ToString();
     }
     [Serializable]
     public class PlayersWindow
@@ -131,8 +130,7 @@ public class TriviaUIManager : MonoBehaviour
         }
         [SerializeField] Image player2Status;
         public void SetPlayer2State(bool loggedIn) => player2Status.color = (loggedIn ? Color.green : Color.red);
-        [SerializeField] Image[] player1QuestionBar;
-        [SerializeField] Image[] player2QuestionBar;
+        [SerializeField] Image[] playerQuestionBar;
         private Color RecordToColor(QuestionRecord record)
         {
             switch (record)
@@ -145,18 +143,12 @@ public class TriviaUIManager : MonoBehaviour
                     return new Color32(255, 255, 255, 0);
             }
         }
-        public void SetPlayer1QuestionRecord(int questionNum, QuestionRecord record) => player1QuestionBar[questionNum].color = RecordToColor(record);
-        public void ResetPlayer1Progress()
+        public void SetPlayerQuestionRecord(int questionNum, QuestionRecord record) => playerQuestionBar[questionNum-1].color = RecordToColor(record);
+        public void ResetPlayerProgress()
         {
-            for (int i = 0; i < player1QuestionBar.Length; i++)
-                SetPlayer1QuestionRecord(i, QuestionRecord.Unanswered);
+            for (int i = 0; i < playerQuestionBar.Length; i++)
+                SetPlayerQuestionRecord(i, QuestionRecord.Unanswered);
         }
-        public void ResetPlayer2Progress()
-        {
-            for (int i = 0; i < player2QuestionBar.Length; i++)
-                SetPlayer2QuestionRecord(i, QuestionRecord.Unanswered);
-        }
-        public void SetPlayer2QuestionRecord(int questionNum, QuestionRecord record) => player2QuestionBar[questionNum].color = RecordToColor(record);
     }
     [Serializable]
     public class WaitingWindow
@@ -205,6 +197,11 @@ public class TriviaUIManager : MonoBehaviour
     #endregion
     [SerializeField] TextMeshProUGUI errorMessage;
     #endregion
+    public void InputFieldEvent_Register(TMP_InputField inputField, UnityAction<string> unityEvent) => inputField.onEndEdit.AddListener(unityEvent);
+    public void InputFieldEvent_Unregister(TMP_InputField inputField, UnityAction<string> unityEvent) => inputField.onEndEdit.RemoveListener(unityEvent);
+    public void ButtonEvent_Register(Button button, UnityAction unityEvent) => button.onClick.AddListener(unityEvent);
+    public void ButtonEvent_Unregister(Button button, UnityAction unityEvent) => button.onClick.RemoveListener(unityEvent);
+
     public static TriviaUIManager _instance;
     public TriviaManager triviaElements;
 
@@ -263,7 +260,9 @@ public class TriviaUIManager : MonoBehaviour
     #region Trivia UI
     public void OpenTriviaUI() => playersWindow.mainGameobject.SetActive(true);
     public void CloseTriviaUI() => playersWindow.mainGameobject.SetActive(false);
-    public void UpdateTimerUI(float Time) => gameWindow.GetSetTimerText = Mathf.CeilToInt(Time).ToString();
+    public void ButtonClicked(int answerNum) => gameWindow.ButtonClicked(answerNum);
+
+
     #endregion
     private void ParseString(string inputString, ref int outputInt, string errorMessage = "")
     {

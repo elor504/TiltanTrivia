@@ -24,8 +24,7 @@ public partial class TriviaManager
             _instance.SetLoadingEvent += SetInputState;
             uiManager.playersWindow.mainGameobject.SetActive(true);
             uiManager.playersWindow.SetPlayer2State(false);
-            uiManager.playersWindow.ResetPlayer1Progress();
-            uiManager.playersWindow.ResetPlayer2Progress();
+            uiManager.playersWindow.ResetPlayerProgress();
             uiManager.playersWindow.GetSetPlayer1Name = _instance.GetSetUsername;
             uiManager.playersWindow.GetSetPlayer2Name = "NOT LOGGED IN";
         }
@@ -77,7 +76,7 @@ public partial class TriviaManager
                         if (jsonSuccess)
                         {
                             uiManager.playersWindow.SetPlayer2State(true);
-                            SetTriviaState(new GameRunningState());
+                            UpdateOpponentUsername();
                         }
                         else
                             CheckForOpponent(updateInterval);
@@ -88,62 +87,175 @@ public partial class TriviaManager
                 else
                     SetErrorMessage(response.errorMessage);
             }
-            //void UpdateOpponentUsername() =>  WebFetch.HttpGet(WebFetch.)
+            void UpdateOpponentUsername()
+            {
+                SetLoadingEvent(true);
+                WebFetch.HttpGet(WebFetch.GetOpponentUsernameURI(_instance.roomID, _instance.playerID), UpdateOpponentUsernameResponse);
+            }
+            void UpdateOpponentUsernameResponse(HttpResponse response)
+            {
+                if (response.success)
+                {
+                    _instance.opponentUsername = response.json;
+                    uiManager.playersWindow.GetSetPlayer2Name = response.json;
+                    SetLoadingEvent(false);
+                    SetTriviaState(new GameRunningState());
+                }
+                else
+                {
+                    SetLoadingEvent(true);
+                    SetErrorMessage(response.errorMessage);
+                }
+            }
         }
         private class GameRunningState : StateAtTrivia
         {
-            const float opponentProgressUpdateInterval = 1f;
-            bool IsUpdatingOpponentProgress;
             Question currentQuestion;
+            Question GetSetCurrentQuestion
+            {
+                get => currentQuestion;
+                set
+                {
+                    currentQuestion = value;
+                    uiManager.gameWindow.UpdateQuestion(value.question, Answer.AnswersToStrings(value.answers));
+                }
+            }
+            int currentQuestionNum = 1;
+            int selectedAnswer;
             public override void OnEnter()
             {
+                currentQuestionNum = 1;
                 uiManager.gameWindow.mainGameobject.SetActive(true);
-                uiManager.gameWindow.GetSetTimerText = "0";
-                IsUpdatingOpponentProgress = true;
-                _instance.StartCoroutine(StartUpdatingOpponentProgress());
+                uiManager.gameWindow.buttonClicked += AnsweredQuestion;
+                _instance.totalTime = 0;
+                uiManager.gameWindow.UpdateTimer(0);
+                _instance.StartCoroutine(UpdateTimer());
+                FetchQuestion();
             }
             public override void OnExit()
             {
+                _instance.StopCoroutine(UpdateTimer());
                 uiManager.gameWindow.mainGameobject.SetActive(false);
-                IsUpdatingOpponentProgress = false;
-                _instance.StopCoroutine(StartUpdatingOpponentProgress());
+                uiManager.gameWindow.buttonClicked -= AnsweredQuestion;
             }
-
+            IEnumerator UpdateTimer()
+            {
+                while (true)
+                {
+                    yield return null;
+                    _instance.totalTime += Time.deltaTime;
+                    uiManager.gameWindow.UpdateTimer(_instance.totalTime);
+                }
+            }
             public override void SetInputState(bool state)
             {
 
             }
-            IEnumerator StartUpdatingOpponentProgress()
+            private void FetchQuestion()
             {
-                while (IsUpdatingOpponentProgress)
+                SetLoadingEvent(true);
+                WebFetch.HttpGet(WebFetch.GetQuestionURI(_instance.roomID, _instance.playerID), FetchQuestionResponse);
+            }
+            private void FetchQuestionResponse(HttpResponse response)
+            {
+                if (response.success)
                 {
-                    yield return new WaitForSeconds(opponentProgressUpdateInterval);
+                    if (JsonParser.TryParseJson(response.json, out ResponseQuestion responseQuestion))
+                    {
+                        LoadQuestion(responseQuestion);
+                    }
+                    else
+                        SetErrorMessage("Failed to parse question json!");
+
+                }
+                else
+                    SetErrorMessage(response.errorMessage);
+                SetLoadingEvent(false);
+
+            }
+            void LoadQuestion(ResponseQuestion responseQuestion)
+            {
+                Answer[] answers = Answer.StringsToAnswers(responseQuestion.answers);
+                HelperFunc.ArrayShuffle(ref answers);
+                currentQuestion = new Question(responseQuestion.question, answers);
+            }
+            void AnsweredQuestion(int answerNum)
+            {
+                selectedAnswer = answerNum;
+                SetLoadingEvent(true);
+                WebFetch.HttpGet(WebFetch.GetInsertAnswerURI(_instance.roomID, _instance.playerID, answerNum), InsertAnswerResponse);
+            }
+            void InsertAnswerResponse(HttpResponse response)
+            {
+                if (response.success)
+                {
+                    if (int.TryParse(response.json, out int correctAnswer))
+                    {
+                        uiManager.playersWindow.SetPlayerQuestionRecord(currentQuestionNum, (selectedAnswer == correctAnswer) ? QuestionRecord.Right : QuestionRecord.Wrong);
+                        currentQuestionNum++;
+                        CheckIfFinished();
+                    }
+                    else
+                    {
+                        SetErrorMessage("Failed to parse correct answer json");
+                        SetLoadingEvent(false);
+
+                    }
+                }
+                else
+                {
+                    SetErrorMessage(response.errorMessage);
+                    SetLoadingEvent(false);
                 }
             }
-            private void LoadQuestion()
+
+            private void CheckIfFinished() => WebFetch.HttpGet(WebFetch.GetPlayerFinishedURI(_instance.roomID, _instance.playerID), CheckIfFinishedResponse);
+            void CheckIfFinishedResponse(HttpResponse response)
             {
-                currentQuestion = new Question()
+                if (response.success)
                 {
-                    question = "How nice is my coding?",
-                    Answer1 = "WOW!",
-                    Answer2 = "OMG!",
-                    Answer3 = "Mehhh...",
-                    Answer4 = "Coolio"
-                };
-                Answer[] answers = new Answer[4];
-                answers[0] = new Answer(1, currentQuestion.Answer1);
-                answers[1] = new Answer(2, currentQuestion.Answer2);
-                answers[2] = new Answer(3, currentQuestion.Answer3);
-                answers[3] = new Answer(4, currentQuestion.Answer4);
-                HelperFunc.ArrayShuffle(ref answers);
+                    if (bool.TryParse(response.json, out bool finished))
+                    {
+                        if (finished)
+                        {
+                            SetLoadingEvent(false);
+                            SetTriviaState(new ResultsState());
+                        }
+                        else
+                            FetchQuestion();
+                    }
+                    else
+                    {
+                        SetLoadingEvent(false);
+                        SetErrorMessage("Failed to parse whether player finished");
+                    }
+                }
+                else
+                {
+                    SetLoadingEvent(false);
+                    SetErrorMessage(response.errorMessage);
+                }
             }
-            class Question
+
+            class ResponseQuestion
             {
                 public string question;
                 public string Answer1;
                 public string Answer2;
                 public string Answer3;
                 public string Answer4;
+                public string[] answers => new string[4] { Answer1, Answer2, Answer3, Answer4 };
+            }
+            class Question
+            {
+                public string question;
+                public Answer[] answers;
+
+                public Question(string question, Answer[] answers)
+                {
+                    this.question = question;
+                    this.answers = answers;
+                }
             }
             struct Answer
             {
@@ -154,14 +266,59 @@ public partial class TriviaManager
                     this.answerNum = answerNum;
                     this.answer = answer;
                 }
-                public static string[] extractStrings(Answer[] answers)
+                public static string[] AnswersToStrings(Answer[] answers)
                 {
                     string[] answersText = new string[answers.Length];
                     for (int i = 0; i < answers.Length; i++)
                         answersText[i] = answers[i].answer;
                     return answersText;
                 }
+                public static Answer[] StringsToAnswers(string[] answersTexts)
+                {
+                    Answer[] answers = new Answer[answersTexts.Length];
+                    for (int i = 0; i < answersTexts.Length; i++)
+                    {
+                        answers[i].answer = answersTexts[i];
+                        answers[i].answerNum = i + 1;
+                    }
+                    return answers;
+                }
             }
+        }
+        private class ResultsState : StateAtTrivia
+        {
+            public override void OnEnter()
+            {
+                uiManager.resultsWindow.mainGameobject.SetActive(true);
+                uiManager.ButtonEvent_Register(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
+                UpdateGameRoomInformation();
+            }
+
+            public override void OnExit()
+            {
+                uiManager.resultsWindow.mainGameobject.SetActive(false);
+                uiManager.ButtonEvent_Unregister(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
+            }
+            private void UpdateGameRoomInformation()
+            {
+                SetLoadingEvent(true);
+                WebFetch.HttpGet(WebFetch.GetRoomURI(_instance.roomID), UpdateGameRoomResponse);
+            }
+            void UpdateGameRoomResponse(HttpResponse response)
+            {
+                if (response.success)
+                {
+                    HelperFunc.NotImplementedError();
+                }
+                else
+                    SetErrorMessage(response.errorMessage);
+                SetLoadingEvent(false);
+            }
+            public override void SetInputState(bool state)
+            {
+                uiManager.resultsWindow.GetReturnToMainMenuButton.interactable = state;
+            }
+            void ReturnToMainMenu() => _instance.GetSetGameState = new LoginState();
         }
     }
 }

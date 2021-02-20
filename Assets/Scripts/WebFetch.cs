@@ -8,13 +8,18 @@ using UnityEngine.Networking;
 public static class WebFetch
 {
     const int timeout = 1;
-    public static string SignupURI<T>(T username) => "https://localhost:44306/api/Player?playerName=" + username.ToString();
-    public static string FindMatchURI<T>(T playerID) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString();
-    public static string GetRoomIdURI<T>(T playerID) => "https://localhost:44306/api/GetGameRoomID?playerId=" + playerID.ToString();
-    public static string GetRoomIdURI<T1,T2>(T1 roomID,T2 playerID) => "https://localhost:44306/api/GameRooms?GameRoomId="+ roomID + "&PlayerId=" + playerID.ToString();
-    public static string GetIsPlayer2LoggedInURI<T>(T roomID) => "https://localhost:44306/api/CheckPlayerConnection?gameRoomId=" + roomID.ToString();
-    public static string CreateRooomURI<T1,T2>(T1 playerID, T2 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "&PW=" + password.ToString();
-    public static string JoinRooomURI<T1,T2,T3>(T1 playerID, T2 roomID, T3 password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID.ToString() + "&GameRoomId=" + roomID.ToString() + "&PW=" + password.ToString();
+    public static string SignupURI(object username) => "https://localhost:44306/api/Player?playerName=" + username;
+    public static string FindMatchURI(object playerID) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID;
+    public static string GetRoomURI(object roomID) => "https://localhost:44306/api/GameRooms/" + roomID;
+    public static string GetRoomIdURI(object playerID) => "https://localhost:44306/api/GetGameRoomID?playerId=" + playerID;
+    public static string GetRoomIdURI(object roomID, object playerID) => "https://localhost:44306/api/GameRooms?GameRoomId="+ roomID + "&PlayerId=" + playerID;
+    public static string GetQuestionURI(object roomID, object playerID) => "https://localhost:44306/api/Question?gameRoomId=" + roomID + "&playerId=" + playerID;
+    public static string GetPlayerFinishedURI(object roomID, object playerID) => "https://localhost:44306/api/CheckPlayerConnection?gameRoomId=" + roomID + "&PlayerId=" + playerID;
+    public static string GetInsertAnswerURI(object roomID, object playerID, object answerNum) => "https://localhost:44306/api/Question?gameRoomId=" + roomID + "&playerId=" + playerID + "&AnswerNumber=" + answerNum;
+    public static string GetOpponentUsernameURI(object roomID, object playerID) => "https://localhost:44306/api/GameRoomLobby?GameRoomId=" + roomID + "&playerId=" + playerID;
+    public static string GetIsPlayer2LoggedInURI(object roomID) => "https://localhost:44306/api/CheckPlayerConnection?gameRoomId=" + roomID;
+    public static string CreateRooomURI(object playerID, object password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID + "&PW=" + password;
+    public static string JoinRooomURI(object playerID, object roomID, object password) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID + "&GameRoomId=" + roomID + "&PW=" + password;
     public static IEnumerator ConnectToAPI(string api, Action<string> callback)
     {
 

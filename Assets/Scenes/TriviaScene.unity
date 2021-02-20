@@ -335,7 +335,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 26571310}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 978880073}
+        m_MethodName: ButtonClicked
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 2
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &26571310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,7 +401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &29116360
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1083,7 +1094,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 103146837}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 978880073}
+        m_MethodName: ButtonClicked
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 1
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &103146837
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5658,7 +5680,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &948374864
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5777,40 +5799,7 @@ MonoBehaviour:
     player1Name: {fileID: 87124813}
     player2Name: {fileID: 1181225875}
     player2Status: {fileID: 781530966}
-    player1QuestionBar:
-    - {fileID: 833495648}
-    - {fileID: 1684374730}
-    - {fileID: 1927909119}
-    - {fileID: 517656833}
-    - {fileID: 103799992}
-    - {fileID: 168843128}
-    - {fileID: 1514904833}
-    - {fileID: 1843649583}
-    - {fileID: 1286273771}
-    - {fileID: 492508019}
-    - {fileID: 2132192569}
-    - {fileID: 220542533}
-    - {fileID: 1987489404}
-    - {fileID: 1411967090}
-    - {fileID: 685989224}
-    - {fileID: 446179125}
-    player2QuestionBar:
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
-    - {fileID: 0}
+    playerQuestionBar: []
   waitingWindow:
     mainGameobject: {fileID: 70548643}
     roomID: {fileID: 1702085994}
@@ -5920,6 +5909,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerID: 0
   roomID: 0
+  totalTime: 0
   roomPassword: 
 --- !u!1 &979494505
 GameObject:
@@ -10448,7 +10438,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1747948725}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 978880073}
+        m_MethodName: ButtonClicked
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 4
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1747948725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12287,7 +12288,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2100309619}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 978880073}
+        m_MethodName: ButtonClicked
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 3
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2100309619
 MonoBehaviour:
   m_ObjectHideFlags: 0
