@@ -146,7 +146,7 @@ public class TriviaUIManager : MonoBehaviour
         public void SetPlayerQuestionRecord(int questionNum, QuestionRecord record) => playerQuestionBar[questionNum-1].color = RecordToColor(record);
         public void ResetPlayerProgress()
         {
-            for (int i = 0; i < playerQuestionBar.Length; i++)
+            for (int i = 1; i <= playerQuestionBar.Length; i++)
                 SetPlayerQuestionRecord(i, QuestionRecord.Unanswered);
         }
     }
