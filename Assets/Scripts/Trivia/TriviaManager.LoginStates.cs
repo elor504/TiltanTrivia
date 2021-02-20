@@ -227,6 +227,7 @@
                 {
                     _instance.roomPassword = password;
                     _instance.roomID = roomID;
+                    SetLoadingEvent(false);
                     _instance.GetSetGameState = new TriviaState();
                 }
 
