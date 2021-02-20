@@ -312,7 +312,7 @@ public partial class TriviaManager
                 else
                 {
                     uiManager.resultsWindow.GetSetOpponentText = "Opponent Time: ";
-                    uiManager.resultsWindow.GetSetYourScore = "Answered: ";
+                    uiManager.resultsWindow.GetSetOpponentScore = "Answered: ";
                     uiManager.resultsWindow.SetResult(ResultWindowState.Waiting);
                     gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(updateInterval));
                     SetLoadingEvent(false);
