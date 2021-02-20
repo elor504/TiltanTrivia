@@ -28,6 +28,7 @@ public partial class TriviaManager
             uiManager.playersWindow.ResetPlayerProgress();
             uiManager.playersWindow.GetSetPlayer1Name = _instance.GetSetUsername;
             uiManager.playersWindow.GetSetPlayer2Name = "NOT LOGGED IN";
+            GetSetStateAtTrivia = new WaitingRoomState();
         }
         public override void OnExit()
         {
