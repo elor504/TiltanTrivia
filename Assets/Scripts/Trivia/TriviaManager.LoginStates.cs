@@ -219,7 +219,11 @@
                     ));
                 }
                 else
+                {
                     SetErrorMessage("Password or/and room ID not valid.");
+                    SetLoadingEvent(false);
+                }
+
             }
             private void JoinRoomSuccess(HttpResponse<bool> response)
             {
