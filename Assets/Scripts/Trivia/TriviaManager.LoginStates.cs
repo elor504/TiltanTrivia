@@ -230,6 +230,9 @@
                     SetLoadingEvent(false);
                     _instance.GetSetGameState = new TriviaState();
                 }
+                else
+                    FailureResponse(response);
+
 
             }
         }
