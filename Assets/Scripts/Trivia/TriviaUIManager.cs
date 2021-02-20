@@ -260,7 +260,7 @@ public class TriviaUIManager : MonoBehaviour
         {
             errorMessage.gameObject.SetActive(true);
             errorMessage.text = errorText;
-            Debug.LogError(errorText);
+            Debug.LogWarning(errorText);
         }
     }
     private void HideErrorMessage()

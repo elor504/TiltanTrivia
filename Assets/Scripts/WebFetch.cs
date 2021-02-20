@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public static class WebFetch
 {
-    const int timeout = int.MaxValue;
+    const int timeout = 8;
     public static string SignupURI(object username) => "https://localhost:44306/api/Player?playerName=" + username;
     public static string FindMatchURI(object playerID) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID;
     public static string GetRoomURI(object roomID) => "https://localhost:44306/api/GameRooms/" + roomID;
