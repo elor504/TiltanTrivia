@@ -297,11 +297,12 @@ public partial class TriviaManager
             void UpdateResultsUI( bool player1)
             {
                 uiManager.resultsWindow.GetSetYourTime = "Your Time: " + (player1?gameRoom.Player1Time: gameRoom.Player2Time);
+                Debug.Log("Score: " + (player1 ? gameRoom.Player1Score : gameRoom.Player2Score).ToString());
                 uiManager.resultsWindow.GetSetYourScore = "Your Score: " + (player1 ? gameRoom.Player1Score : gameRoom.Player2Score) + "/16";
                 if ((player1 && gameRoom.CurPlayer2Q == 16) || (!player1 && gameRoom.CurPlayer1Q == 16))
                 {
                     uiManager.resultsWindow.GetSetOpponentText = "Your Time: " + (player1 ? gameRoom.Player2Time : gameRoom.Player1Time);
-                    uiManager.resultsWindow.GetSetYourScore = "Your Score: " + (player1 ? gameRoom.Player2Score : gameRoom.Player1Score) + "/16";
+                    uiManager.resultsWindow.GetSetYourScore = "Answered: " + (player1 ? gameRoom.Player2Score : gameRoom.Player1Score) + "/16";
                     if ((player1 && (gameRoom.Player1Score > gameRoom.Player2Score || (gameRoom.Player1Score == gameRoom.Player2Score && gameRoom.Player1Time < gameRoom.Player2Score)))
                         || (!player1 && (gameRoom.Player2Score > gameRoom.Player1Score || (gameRoom.Player2Score == gameRoom.Player1Score && gameRoom.Player2Time < gameRoom.Player1Score))))
                         uiManager.resultsWindow.SetResult(ResultWindowState.Won);
@@ -311,6 +312,8 @@ public partial class TriviaManager
                 }
                 else
                 {
+                    uiManager.resultsWindow.GetSetOpponentText = "Opponent Time: ";
+                    uiManager.resultsWindow.GetSetYourScore = "Answered: ";
                     uiManager.resultsWindow.SetResult(ResultWindowState.Waiting);
                     gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(updateInterval));
                 }
