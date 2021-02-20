@@ -231,7 +231,11 @@
                     _instance.GetSetGameState = new TriviaState();
                 }
                 else
+                {
+                    if (response.errorMessage == "")
+                        response.errorMessage = "Server error!";
                     FailureResponse(response);
+                }
 
 
             }
