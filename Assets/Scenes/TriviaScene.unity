@@ -5826,9 +5826,9 @@ MonoBehaviour:
     LostText_GO: {fileID: 663021330}
     WonText_GO: {fileID: 1307280524}
     yourTime: {fileID: 908728914}
-    yourScore: {fileID: 0}
-    opponentTime: {fileID: 0}
-    opponentScore: {fileID: 0}
+    yourScore: {fileID: 2126957757}
+    opponentTime: {fileID: 214132090}
+    opponentScore: {fileID: 1929054179}
     returnToMainMenuButton: {fileID: 1777086211}
   errorMessage: {fileID: 1237592020}
   triviaElements: {fileID: 0}
