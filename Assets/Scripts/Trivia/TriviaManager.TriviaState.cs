@@ -14,9 +14,9 @@ public partial class TriviaManager
             set
             {
                 if (stateAtLogin != null)
-                    stateAtLogin.OnExit();
+                    stateAtLogin.Exit();
                 stateAtLogin = value;
-                stateAtLogin.OnEnter();
+                stateAtLogin.Exit();
             }
         }
         public override void OnEnter()
@@ -38,9 +38,7 @@ public partial class TriviaManager
         public override void SetErrorMessage(string value)
         {
         }
-        public override void SetInputState(bool state)
-        {
-        }
+        public override void SetInputState(bool state) => GetSetStateAtTrivia.SetInputState(state);
         public abstract class StateAtTrivia : State
         {
             protected void SetTriviaState(StateAtTrivia stateAtTrivia) => triviaState.GetSetStateAtTrivia = stateAtTrivia;

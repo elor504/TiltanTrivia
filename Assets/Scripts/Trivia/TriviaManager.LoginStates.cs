@@ -11,9 +11,9 @@
             set
             {
                 if (stateAtLogin != null)
-                    stateAtLogin.OnExit();
+                    stateAtLogin.Exit();
                 stateAtLogin = value;
-                stateAtLogin.OnEnter();
+                stateAtLogin.Enter();
             }
         }
 
@@ -33,7 +33,6 @@
         public override void OnExit()
         {
             _instance.SetLoadingEvent -= SetInputState;
-            stateAtLogin.OnExit();
             uiManager.SetMainLoginWindow(false);
         }
         public override void SetErrorMessage(string value) => uiManager.SetErrorMessage(value);

@@ -10,9 +10,9 @@ public partial class TriviaManager : MonoBehaviour
         set
         {
             if (gameState != null)
-                gameState.OnExit();
+                gameState.Exit();
             gameState = value;
-            gameState.OnEnter();
+            gameState.Enter();
         }
     }
     private string username;
@@ -57,6 +57,16 @@ public partial class TriviaManager : MonoBehaviour
     public abstract class State
     {
         static public TriviaUIManager uiManager;
+        public void Enter()
+        {
+            SetLoadingEvent(false);
+            OnEnter();
+        }
+        public void Exit()
+        {
+            SetLoadingEvent(false);
+            OnExit();
+        }
         public abstract void OnEnter();
         public abstract void OnExit();
         public abstract void SetInputState(bool state);
