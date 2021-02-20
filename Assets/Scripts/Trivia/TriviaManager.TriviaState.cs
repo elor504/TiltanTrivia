@@ -163,12 +163,12 @@ public partial class TriviaManager
                 GetSetCurrentQuestion = new Question(responseQuestion.Question, answers);
                 Debug.Log("Question: " + GetSetCurrentQuestion.question);
             }
-            void AnsweredQuestion(int answerNum)
+            void AnsweredQuestion(int answerButtonNum)
             {
-                selectedAnswer = answerNum;
+                selectedAnswer = GetSetCurrentQuestion.answers[answerButtonNum - 1].answerNum;
                 SetLoadingEvent(true);
                 _instance.StartCoroutine(WebFetch.HttpGet(
-                WebFetch.GetInsertAnswerURI(_instance.roomID, _instance.playerID, answerNum),
+                WebFetch.GetInsertAnswerURI(_instance.roomID, _instance.playerID, selectedAnswer),
                 InsertAnswerSuccess,
                 FailureResponse
                 ));

@@ -5800,7 +5800,23 @@ MonoBehaviour:
     player1Name: {fileID: 87124813}
     player2Name: {fileID: 1181225875}
     player2Status: {fileID: 781530966}
-    playerQuestionBar: []
+    playerQuestionBar:
+    - {fileID: 833495648}
+    - {fileID: 1684374730}
+    - {fileID: 1927909119}
+    - {fileID: 517656833}
+    - {fileID: 103799992}
+    - {fileID: 168843128}
+    - {fileID: 1514904833}
+    - {fileID: 1843649583}
+    - {fileID: 1286273771}
+    - {fileID: 492508019}
+    - {fileID: 2132192569}
+    - {fileID: 220542533}
+    - {fileID: 1987489404}
+    - {fileID: 1411967090}
+    - {fileID: 685989224}
+    - {fileID: 446179125}
   waitingWindow:
     mainGameobject: {fileID: 70548643}
     roomID: {fileID: 1702085994}
