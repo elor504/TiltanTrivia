@@ -401,7 +401,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &29116360
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5810,7 +5810,9 @@ MonoBehaviour:
     LostText_GO: {fileID: 663021330}
     WonText_GO: {fileID: 1307280524}
     yourTime: {fileID: 908728914}
-    opponentText: {fileID: 214132090}
+    yourScore: {fileID: 0}
+    opponentTime: {fileID: 0}
+    opponentScore: {fileID: 0}
     returnToMainMenuButton: {fileID: 1777086211}
   errorMessage: {fileID: 1237592020}
   triviaElements: {fileID: 0}
