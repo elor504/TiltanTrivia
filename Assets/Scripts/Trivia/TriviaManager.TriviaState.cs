@@ -161,6 +161,7 @@ public partial class TriviaManager
                 Answer[] answers = Answer.StringsToAnswers(responseQuestion.answers);
                 HelperFunc.ArrayShuffle(ref answers);
                 GetSetCurrentQuestion = new Question(responseQuestion.question, answers);
+                Debug.Log("Question: " + GetSetCurrentQuestion.question);
             }
             void AnsweredQuestion(int answerNum)
             {
