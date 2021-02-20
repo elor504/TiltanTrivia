@@ -23,8 +23,10 @@
         {
             loginState = this;
             int playerID = _instance.playerID;
+            string username = _instance.username;
             _instance.Reset();
             _instance.playerID = playerID;
+            _instance.username = username;
             uiManager.SetMainLoginWindow(true);
             if (_instance.playerID == 0 || _instance.username == "")
                 GetSetStateAtLogin = new SignupState();
