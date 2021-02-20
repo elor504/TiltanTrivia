@@ -160,7 +160,7 @@ public partial class TriviaManager
             {
                 Answer[] answers = Answer.StringsToAnswers(responseQuestion.answers);
                 HelperFunc.ArrayShuffle(ref answers);
-                currentQuestion = new Question(responseQuestion.question, answers);
+                GetSetCurrentQuestion = new Question(responseQuestion.question, answers);
             }
             void AnsweredQuestion(int answerNum)
             {
