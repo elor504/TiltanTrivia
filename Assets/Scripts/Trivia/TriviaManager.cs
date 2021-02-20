@@ -69,7 +69,7 @@ public partial class TriviaManager : MonoBehaviour
         public abstract void OnEnter();
         public abstract void OnExit();
         public abstract void SetInputState(bool state);
-        protected void SetLoadingEvent(bool state) => _instance.SetLoadingEvent(state);
+        protected void SetLoadingEvent(bool state) => _instance.SetLoading(state);
         protected void SetErrorMessage(string error) => TriviaUIManager._instance.SetErrorMessage(error);
         protected virtual void FailureResponse<T>(HttpResponse<T> response)
         {

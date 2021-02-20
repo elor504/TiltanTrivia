@@ -289,6 +289,7 @@ public partial class TriviaManager
                 else
                 {
                     SetErrorMessage("Id was not found in room...");
+                    SetLoadingEvent(false);
                 }
 
             }
