@@ -92,7 +92,8 @@ public partial class TriviaManager
             }
             void UpdateOpponentUsernameSuccess(HttpResponse<string> response)
             {
-                _instance.opponentUsername = response.body;
+                response.body = response.body.Remove('\"');
+                _instance.opponentUsername =  response.body;
                 uiManager.playersWindow.GetSetPlayer2Name = response.body;
                 SetLoadingEvent(false);
                 SetTriviaState(new GameRunningState());
