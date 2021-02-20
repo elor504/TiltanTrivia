@@ -108,7 +108,7 @@
             }
             private void SignUpSuccess(HttpResponse<int> response)
             {
-
+                _instance.GetSetUsername = username;
                 _instance.playerID = response.body;
                 ExitToMainWindow();
                 SetLoadingEvent(false);
