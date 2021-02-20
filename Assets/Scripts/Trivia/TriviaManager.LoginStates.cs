@@ -13,6 +13,7 @@
                 if (stateAtLogin != null)
                     stateAtLogin.Exit();
                 stateAtLogin = value;
+                if (stateAtLogin != null)
                 stateAtLogin.Enter();
             }
         }
@@ -32,6 +33,7 @@
 
         public override void OnExit()
         {
+            GetSetStateAtLogin = null;
             _instance.SetLoadingEvent -= SetInputState;
             uiManager.SetMainLoginWindow(false);
         }

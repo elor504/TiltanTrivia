@@ -16,6 +16,7 @@ public partial class TriviaManager
                 if (stateAtLogin != null)
                     stateAtLogin.Exit();
                 stateAtLogin = value;
+                if (stateAtLogin != null)
                 stateAtLogin.Enter();
             }
         }
@@ -31,6 +32,7 @@ public partial class TriviaManager
         }
         public override void OnExit()
         {
+            GetSetStateAtTrivia = null;
             uiManager.playersWindow.mainGameobject.SetActive(false);
         }
         public override void SetErrorMessage(string value)
@@ -262,8 +264,8 @@ public partial class TriviaManager
 
             public override void OnExit()
             {
-                _instance.StopCoroutine(gameroomUpdater);
                 uiManager.resultsWindow.mainGameobject.SetActive(false);
+                _instance.StopCoroutine(gameroomUpdater);
                 uiManager.ButtonEvent_Unregister(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
             }
             IEnumerator UpdateGameRoomInformation(float delay)
