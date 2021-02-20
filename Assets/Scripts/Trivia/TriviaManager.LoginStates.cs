@@ -37,7 +37,7 @@
         }
         public override void SetErrorMessage(string value) => uiManager.SetErrorMessage(value);
 
-        public override void SetInputState(bool value) => stateAtLogin.SetInputState(value);
+        public override void SetInputState(bool value) => GetSetStateAtLogin.SetInputState(value);
         //States
         public abstract class StateAtLogin : State
         {
