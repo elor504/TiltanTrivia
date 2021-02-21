@@ -25,14 +25,12 @@
             _instance.Reset();
             uiManager.SetMainLoginWindow(true);
             GetSetStateAtLogin = new SignupState();
-            _instance.SetLoadingEvent += SetInputState;
 
         }
 
         public override void OnExit()
         {
             GetSetStateAtLogin = null;
-            _instance.SetLoadingEvent -= SetInputState;
             uiManager.SetMainLoginWindow(false);
         }
         public override void SetErrorMessage(string value) => uiManager.SetErrorMessage(value);
