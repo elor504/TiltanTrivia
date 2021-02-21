@@ -71,6 +71,7 @@ public partial class TriviaManager
             }
             void CheckForOpponentSuccess(HttpResponse<bool> response)
             {
+                Debug.Log("Opponent logged in: " + response.body);
                 if (response.body)
                 {
                     uiManager.playersWindow.SetPlayer2State(true);
