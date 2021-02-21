@@ -276,13 +276,16 @@ public partial class TriviaManager
             IEnumerator UpdateGameRoomInformation(float delay)
             {
                 if (delay > 0)
-                    yield return new WaitForSeconds(delay);
-                SetLoadingEvent(true);
-                apiRequest = _instance.StartCoroutine(WebFetch.HttpGet<GameRoomData>(
-                    WebFetch.GetRoomURI(_instance.roomID),
-                    UpdateGameRoomSuccess,
-                    FailureResponse
-                    ));
+                    yield return new WitForSeconds(delay);
+                if (windowOpen)
+                {
+                    SetLoadingEvent(true);
+                    apiRequest = _instance.StartCoroutine(WebFetch.HttpGet<GameRoomData>(
+                        WebFetch.GetRoomURI(_instance.roomID),
+                        UpdateGameRoomSuccess,
+                        FailureResponse
+                        ));
+                }
             }
             void UpdateGameRoomSuccess(HttpResponse<GameRoomData> response)
             {
@@ -319,7 +322,8 @@ public partial class TriviaManager
                     uiManager.resultsWindow.GetSetOpponentText = "Opponent Time: ";
                     uiManager.resultsWindow.GetSetOpponentScore = "Answered: ";
                     uiManager.resultsWindow.SetResult(ResultWindowState.Waiting);
-                    gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(updateInterval));
+                    if (windowOpen)
+                        gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(updateInterval));
                     SetLoadingEvent(false);
                 }
             }
