@@ -22,11 +22,7 @@
         public override void OnEnter()
         {
             loginState = this;
-            int playerID = _instance.playerID;
-            string username = _instance.username;
             _instance.Reset();
-            _instance.playerID = playerID;
-            _instance.username = username;
             uiManager.SetMainLoginWindow(true);
             GetSetStateAtLogin = new SignupState();
             _instance.SetLoadingEvent += SetInputState;
