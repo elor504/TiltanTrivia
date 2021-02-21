@@ -253,6 +253,7 @@ public partial class TriviaManager
             const float updateInterval = 1.5f;
             GameRoomData gameRoom;
             Coroutine gameroomUpdater;
+            Coroutine apiRequest;
             bool windowOpen;
             public override void OnEnter()
             {
@@ -269,36 +270,31 @@ public partial class TriviaManager
                 windowOpen = false;
                 uiManager.resultsWindow.mainGameobject.SetActive(false);
                 _instance.StopCoroutine(gameroomUpdater);
+                _instance.StopCoroutine(apiRequest);
                 uiManager.ButtonEvent_Unregister(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
             }
             IEnumerator UpdateGameRoomInformation(float delay)
             {
                 if (delay > 0)
                     yield return new WaitForSeconds(delay);
-                if (windowOpen)
-                {
-                    SetLoadingEvent(true);
-                _instance.StartCoroutine(WebFetch.HttpGet<GameRoomData>(
+                SetLoadingEvent(true);
+                apiRequest = _instance.StartCoroutine(WebFetch.HttpGet<GameRoomData>(
                     WebFetch.GetRoomURI(_instance.roomID),
                     UpdateGameRoomSuccess,
                     FailureResponse
                     ));
-                }
             }
             void UpdateGameRoomSuccess(HttpResponse<GameRoomData> response)
             {
-                if (windowOpen)
+                gameRoom = response.body;
+                if (gameRoom.Player1Id == _instance.playerID || gameRoom.Player2Id == _instance.playerID)
                 {
-                    gameRoom = response.body;
-                    if (gameRoom.Player1Id == _instance.playerID || gameRoom.Player2Id == _instance.playerID)
-                    {
-                        UpdateResultsUI(gameRoom.Player1Id == _instance.playerID);
-                    }
-                    else
-                    {
-                        SetErrorMessage("Id was not found in room...");
-                        SetLoadingEvent(false);
-                    }
+                    UpdateResultsUI(gameRoom.Player1Id == _instance.playerID);
+                }
+                else
+                {
+                    SetErrorMessage("Id was not found in room...");
+                    SetLoadingEvent(false);
                 }
 
             }
