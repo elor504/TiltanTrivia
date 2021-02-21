@@ -60,6 +60,7 @@ public partial class TriviaManager : MonoBehaviour
         public void Enter()
         {
             OnEnter();
+            SetInputState(true);
         }
         public void Exit()
         {
