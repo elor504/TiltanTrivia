@@ -269,8 +269,10 @@ public partial class TriviaManager
             {
                 windowOpen = false;
                 uiManager.resultsWindow.mainGameobject.SetActive(false);
-                _instance.StopCoroutine(gameroomUpdater);
-                _instance.StopCoroutine(apiRequest);
+                if (gameroomUpdater != null)
+                    _instance.StopCoroutine(gameroomUpdater);
+                if (apiRequest != null)
+                    _instance.StopCoroutine(apiRequest);
                 uiManager.ButtonEvent_Unregister(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
             }
             IEnumerator UpdateGameRoomInformation(float delay)
