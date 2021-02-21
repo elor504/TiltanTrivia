@@ -258,12 +258,11 @@ public partial class TriviaManager
             bool windowOpen;
             public override void OnEnter()
             {
+                windowOpen = true;
                 uiManager.resultsWindow.mainGameobject.SetActive(true);
                 uiManager.ButtonEvent_Register(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
-                gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(0));
                 gameRoom = new GameRoomData() { Player1Id = _instance.playerID };
                 UpdateResultsUI(true);
-                windowOpen = true;
             }
 
             public override void OnExit()
