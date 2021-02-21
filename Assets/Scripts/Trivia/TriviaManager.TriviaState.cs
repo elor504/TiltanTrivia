@@ -251,7 +251,7 @@ public partial class TriviaManager
         }
         private class ResultsState : StateAtTrivia
         {
-            const float updateInterval = 2f;
+            const float updateInterval = 0.2f;
             GameRoomData gameRoom;
             Coroutine gameroomUpdater;
             Coroutine apiRequest;
