@@ -41,8 +41,8 @@ public partial class TriviaManager : MonoBehaviour
         Reset();
         //uIManager = TriviaUIManager._instance;
         State.uiManager = TriviaUIManager._instance;
-        GetSetGameState = new LoginState();
         SetLoadingEvent += (value) => { gameState.SetInputState(!value); };
+        GetSetGameState = new LoginState();
     }
     public void Reset()
     {

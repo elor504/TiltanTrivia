@@ -275,12 +275,15 @@ public partial class TriviaManager
             {
                 if (delay > 0)
                     yield return new WaitForSeconds(delay);
-                SetLoadingEvent(true);
+                if (windowOpen)
+                {
+                    SetLoadingEvent(true);
                 _instance.StartCoroutine(WebFetch.HttpGet<GameRoomData>(
                     WebFetch.GetRoomURI(_instance.roomID),
                     UpdateGameRoomSuccess,
                     FailureResponse
                     ));
+                }
             }
             void UpdateGameRoomSuccess(HttpResponse<GameRoomData> response)
             {
