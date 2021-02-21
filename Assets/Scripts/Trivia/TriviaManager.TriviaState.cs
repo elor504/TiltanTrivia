@@ -78,7 +78,7 @@ public partial class TriviaManager
                     UpdateOpponentUsername();
                 }
                 else
-                    CheckForOpponent(updateInterval);
+                    _instance.StartCoroutine(CheckForOpponent(updateInterval));
             }
             void UpdateOpponentUsername()
             {
