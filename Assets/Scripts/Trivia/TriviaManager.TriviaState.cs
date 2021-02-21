@@ -17,7 +17,7 @@ public partial class TriviaManager
                     stateAtLogin.Exit();
                 stateAtLogin = value;
                 if (stateAtLogin != null)
-                stateAtLogin.Enter();
+                    stateAtLogin.Enter();
             }
         }
         public override void OnEnter()
@@ -91,7 +91,7 @@ public partial class TriviaManager
             void UpdateOpponentUsernameSuccess(HttpResponse<string> response)
             {
                 response.body = response.body.Replace('"', ' ');
-                _instance.opponentUsername =  response.body;
+                _instance.opponentUsername = response.body;
                 uiManager.playersWindow.GetSetPlayer2Name = response.body;
                 SetLoadingEvent(false);
                 SetTriviaState(new GameRunningState());
@@ -253,17 +253,20 @@ public partial class TriviaManager
             const float updateInterval = 1.5f;
             GameRoomData gameRoom;
             Coroutine gameroomUpdater;
+            bool windowOpen;
             public override void OnEnter()
             {
                 uiManager.resultsWindow.mainGameobject.SetActive(true);
                 uiManager.ButtonEvent_Register(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
                 gameroomUpdater = _instance.StartCoroutine(UpdateGameRoomInformation(0));
-                gameRoom = new GameRoomData() { Player1Id = _instance.playerID};
+                gameRoom = new GameRoomData() { Player1Id = _instance.playerID };
                 UpdateResultsUI(true);
+                windowOpen = true;
             }
 
             public override void OnExit()
             {
+                windowOpen = false;
                 uiManager.resultsWindow.mainGameobject.SetActive(false);
                 _instance.StopCoroutine(gameroomUpdater);
                 uiManager.ButtonEvent_Unregister(uiManager.resultsWindow.GetReturnToMainMenuButton, ReturnToMainMenu);
@@ -281,22 +284,24 @@ public partial class TriviaManager
             }
             void UpdateGameRoomSuccess(HttpResponse<GameRoomData> response)
             {
-                Debug.Log(this);
-                gameRoom = response.body;
-                if(gameRoom.Player1Id == _instance.playerID || gameRoom.Player2Id == _instance.playerID)
+                if (windowOpen)
                 {
-                    UpdateResultsUI(gameRoom.Player1Id == _instance.playerID);
-                }
-                else
-                {
-                    SetErrorMessage("Id was not found in room...");
-                    SetLoadingEvent(false);
+                    gameRoom = response.body;
+                    if (gameRoom.Player1Id == _instance.playerID || gameRoom.Player2Id == _instance.playerID)
+                    {
+                        UpdateResultsUI(gameRoom.Player1Id == _instance.playerID);
+                    }
+                    else
+                    {
+                        SetErrorMessage("Id was not found in room...");
+                        SetLoadingEvent(false);
+                    }
                 }
 
             }
-            void UpdateResultsUI( bool player1)
+            void UpdateResultsUI(bool player1)
             {
-                uiManager.resultsWindow.GetSetYourTime = "Your Time: " + (player1?gameRoom.Player1Time: gameRoom.Player2Time);
+                uiManager.resultsWindow.GetSetYourTime = "Your Time: " + (player1 ? gameRoom.Player1Time : gameRoom.Player2Time);
                 Debug.Log("Score: " + (player1 ? gameRoom.Player1Score : gameRoom.Player2Score).ToString());
                 uiManager.resultsWindow.GetSetYourScore = "Your Score: " + (player1 ? gameRoom.Player1Score : gameRoom.Player2Score) + "/16";
                 if ((player1 && gameRoom.CurPlayer2Q == 16) || (!player1 && gameRoom.CurPlayer1Q == 16))
