@@ -276,7 +276,7 @@ public partial class TriviaManager
             IEnumerator UpdateGameRoomInformation(float delay)
             {
                 if (delay > 0)
-                    yield return new WitForSeconds(delay);
+                    yield return new WaitForSeconds(delay);
                 if (windowOpen)
                 {
                     SetLoadingEvent(true);
