@@ -46,7 +46,7 @@ public partial class TriviaManager
         }
         private class WaitingRoomState : StateAtTrivia
         {
-            const float updateInterval = 0f;
+            const float updateInterval = 1f;
             const string gameRoomIdText = "Room ID: ";
             public override void OnEnter()
             {
@@ -251,7 +251,7 @@ public partial class TriviaManager
         }
         private class ResultsState : StateAtTrivia
         {
-            const float updateInterval = 0.2f;
+            const float updateInterval = 1f;
             GameRoomData gameRoom;
             Coroutine gameroomUpdater;
             Coroutine apiRequest;
