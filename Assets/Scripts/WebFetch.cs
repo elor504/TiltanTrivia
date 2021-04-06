@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 public static class WebFetch
 {
-    const int timeout = 8;
+    const int timeout = 2;
     public static string SignupURI(object username) => "https://localhost:44306/api/Player?playerName=" + username;
     public static string FindMatchURI(object playerID) => "https://localhost:44306/api/GameRoomLobby?playerId=" + playerID;
     public static string GetRoomURI(object roomID) => "https://localhost:44306/api/GameRooms/" + roomID;
@@ -94,7 +94,9 @@ public static class WebFetch
     /// Call the callback action on finish with the values: (success, json, error)
     /// </param>
     /// <returns></returns>
-    public static IEnumerator HttpGet<T>(string uri, Action<HttpResponse<T>> onSuccessCallback = null, Action<HttpResponse<T>> onFailureCallback = null) where T : class
+    public static IEnumerator HttpGet<T>
+        (string uri, Action<HttpResponse<T>> onSuccessCallback = null, Action<HttpResponse<T>> onFailureCallback = null) 
+        where T : class
     {
         using (UnityWebRequest webReq = UnityWebRequest.Get(uri))
         {

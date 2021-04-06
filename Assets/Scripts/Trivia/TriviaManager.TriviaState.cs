@@ -159,7 +159,7 @@ public partial class TriviaManager
             void LoadQuestion(ResponseQuestion responseQuestion)
             {
                 Answer[] answers = Answer.StringsToAnswers(responseQuestion.answers);
-                HelperFunc.ArrayShuffle(ref answers);
+                HelperFunc.Shuffle(ref answers);
                 GetSetCurrentQuestion = new Question(responseQuestion.Question, answers);
                 Debug.Log("Question: " + GetSetCurrentQuestion.question);
             }
